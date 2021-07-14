@@ -1,0 +1,210 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Thêm liên lạc</title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--============================================receive message from attribute=================================================-->
+<script th:src="@{/static/js/message.js}"></script>
+<script>
+	$(document)
+			.ready(
+					function() {
+						//receive message then show dialog
+						var messageSuccess = '[[${messageSuccess}]]';
+						var messageError = '[[${messageError}]]';
+						receiveMessageFromControllerAndShowDialog(
+								messageSuccess, messageError);
+						$("#formData")
+								.submit(
+										function() {
+											var title = $("#title").val();
+											var content = $("#question").val();
+											var name = $("#name").val();
+											var email = $("#email").val();
+											var phone = $("#phone").val();
+
+											var statusResult = true;
+											if (title == null
+													|| title.length <= 0) {
+												$("#errorTitle")
+														.text(
+																"  Vui lòng nhập tiêu đề");
+												statusResult = false;
+											} else {
+												$("#errorTitle").text("");
+											}
+											console.log(content.length)
+											if (content == null
+													|| content.length <= 255
+												) {
+												$("#errorContent")
+														.text(
+																"  Vui lòng nhập nội dung từ khoảng 255 kí tự");
+												statusResult = false;
+											} else {
+												$("#errorContent").text("");
+											}
+											if (name == null
+													|| name.length <= 0) {
+												$("#errorName").text(
+														"  Vui lòng nhập tên");
+												statusResult = false;
+											} else {
+												$("#errorName").text("");
+											}
+											var regex = new RegExp(
+													"^([^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+|\\x22([^\\x0d\\x22\\x5c\\x80-\\xff]|\\x5c[\\x00-\\x7f])*\\x22)(\\x2e([^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+|\\x22([^\\x0d\\x22\\x5c\\x80-\\xff]|\\x5c[\\x00-\\x7f])*\\x22))*\\x40([^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+|\\x5b([^\\x0d\\x5b-\\x5d\\x80-\\xff]|\\x5c[\\x00-\\x7f])*\\x5d)(\\x2e([^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+|\\x5b([^\\x0d\\x5b-\\x5d\\x80-\\xff]|\\x5c[\\x00-\\x7f])*\\x5d))*(\\.\\w{2,})+$");
+											if (email == null
+													|| email.length <= 0
+													|| !regex.test(email)) {
+												$("#errorEmail")
+														.text(
+																"  Vui lòng nhập email đúng định dạng");
+												statusResult = false;
+											} else {
+												$("#errorEmail").text("");
+											}
+											var regex = new RegExp(
+													"^(03|05|07|08|09|01[2|6|8|9])+([0-9]){8}$");
+											if (!regex.test(phone)) {
+												$("#errorPhone")
+														.text(
+																"  Vui lòng nhập phone đúng định dạng ^(03|05|07|08|09|01[2|6|8|9])+([0-9]){8}$");
+												statusResult = false;
+											} else {
+												$("#errorPhone").text("");
+
+											}
+
+											if (statusResult == true) {
+												return true;
+											} else {
+												return false;
+											}
+										});
+					});
+</script>
+<script src="//cdn.ckeditor.com/4.16.1/full/ckeditor.js"></script>
+<style type="text/css">
+.error {
+	color: red;
+	font-weight: bold;
+}
+</style>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="fragments/header :: #header-wrapper"></div>
+		<div th:replace="fragments/navigation :: #navigation"></div>
+		<div class="boxed-content-wrapper clearfix">
+			<div class="inner" id="adheader" style="margin-bottom: 20px"></div>
+			<div class="inner"></div>
+			<div class="inner" style="margin-top: 20px;">
+
+				<div class="main_container">
+					<div class="main-col" id="main_container">
+						<div id="shortlist_wrapper">
+							<div id="shortlist">
+								<select class="form-control"
+									style="background: #912f2f; color: #fff">
+
+								</select>
+							</div>
+						</div>
+						<div class="base-box page-wrap" style="margin-bottom: 0px">
+							<h1 class="page-title">Liên hệ</h1>
+							<div class="entry-content">
+								<div>
+									<p>Nếu bạn muốn liên hệ trực tiếp với mình thì có thể inbox
+										qua facebook fb.com/thehalfheart, lưu ý là bạn phải add
+										friends hoặc follow, nếu không tin nhắn vào hộp thư chờ thì
+										mình sẽ không đọc được.</p>
+								</div>
+								<div role="form" class="wpcf7">
+									<div class="screen-reader-response"></div>
+									<form id="formData" accept-charset="utf-8"
+										th:object="${contact}" th:action="@{saveContact}" action="#"
+										method="POST" >
+										<div style="display: none;"></div>
+										<p>
+											<label style="font-weight: bold !important">Tiêu đề</label> <span
+												class="error" id="errorTitle"> *</span> <input type="text"
+												th:field="*{title}" placeholder="Tiêu đề (required)" /><br />
+										</p>
+										<p>
+											<label style="font-weight: bold">Tên của bạn</label> <span
+												class="error" id="errorName"> *</span><br /> <input
+												type="text" th:field="*{name}" id="name" value="" size="40"
+												placeholder="Tên của bạn (required)" /><br />
+										</p>
+										<p>
+											<label style="font-weight: bold">Email của bạn</label> <span
+												class="error" id="errorEmail"> *</span><br /> <input
+												type="email" th:field="*{email}" id="email" value=""
+												size="40" placeholder="Email của bạn (required)" /> <br />
+										</p>
+										<p>
+											<label style="font-weight: bold">Địa chỉ của bạn</label> <br />
+											<input type="text" th:field="*{address}" id="address"
+												value="" size="40" placeholder="Địa chỉ của bạn" /> <br />
+										</p>
+										<p>
+											<label style="font-weight: bold">Điện thoại của bạn</label> <span
+												class="error" id="errorPhone"> *</span><br /> <input
+												type="text" th:field="*{phone}" id="phone" value=""
+												size="40" placeholder="Điện thoại của bạn (required)">
+											<br />
+										</p>
+										<p>
+											<label style="font-weight: bold">Nội dung liên hệ</label><span
+												class="error" id="errorContent"> *</span><br />
+											<textarea id="question" th:field="*{content}" cols="40"
+												rows="10" placeholder="Nội dung liên hệ"></textarea>
+											<br />
+										</p>
+										<p>
+											<input style="margin-left: 20px" type="submit"
+												value="Gửi liên hệ" id="send_message">
+										</p>
+
+									</form>
+								</div>
+								
+								<script language="javascript">
+									CKEDITOR.replace('question');
+								</script>
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/footer :: #footer_wrapper"></div>
+	<div th:replace="fragments/report :: #tool"></div>
+	<script type='text/javascript'
+		src='https://freetuts.net/public/theme/js/lib.js?v=424'></script>
+	<script type='text/javascript'
+		src='https://freetuts.net/public/theme/js/all.js?v=424'></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="no-js" lang="vi-VN" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Học online miễn phí - Freetuts - Freetuts</title>
+<link rel="shortcut icon" type="image/x-icon"
+	href="https://freetuts.net/public/logo/icon.png?r=1" />
+<!--===============================================================================================-->
+<link rel='stylesheet' id='plugins-css'
+	href='https://freetuts.net/public/theme/css/style.css?v=424'
+	type='text/css' media='all' />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/css/khoahoc.css}" />
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: link" />
+<!--===============================================================================================-->
+<script type="text/javascript"
+	src="https://goodads.online/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	var idCourse = '[[${course.idCourse}]]';
+	$.ajax({
+		type : 'GET',
+		contentType: "application/json; charset=utf-8",
+		url : 'http://localhost:8762/api/v1/registration/listByIdCourse?idCourse='+idCourse,
+		success : function(e) {
+			var list = e.data;
+			var table = document.getElementById("listStudent");
+			
+		},
+		error : function(e) {
+			var listErrorMessages = e.responseJSON.listErrorMessages;
+			dialogError(listErrorMessages[0].message);
+		}
+	});
+</script>
+<style>
+#listStudent td, .table_coupon td, .table_coupon th {
+	padding: 10px;
+}
+.box-gray{
+	font-size:15px;;
+}
+</style>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="#">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="fragments/header :: #header-wrapper"></div>
+		<div th:replace="fragments/navigation :: #navigation"></div>
+		<div class="boxed-content-wrapper clearfix">
+			<div class="inner" id="adheader" style="margin-bottom: 20px"></div>
+			<div class="inner">
+				<div class=""
+					style="line-height: 30px; margin-bottom: 10px; font-size: 15px">
+					<div itemscope itemtype="#">
+						<span itemprop="itemListElement" itemscope
+							itemtype="https://schema.org/ListItem"> <a itemprop="item"
+							th:href="${'/demo/'}" title="Trang chủ"> <span
+								itemprop="name">Home</span>
+								<meta itemprop="position" content="1" />
+						</a>
+						</span> > <span itemprop="itemListElement" itemscope itemtype="#">
+							<a itemprop="item" style="color:black;text-decoration:none;"> Danh sách khách hàng mua khóa <span itemprop="name" th:text="${course.title}">Đánh
+									giá</span>
+								<meta itemprop="position" content="2" />
+						</a>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="inner" style="margin-top: 20px;">
+				<div class="abc2side">
+					<div id="abcleft" style="overflow: hidden; height: 600px;">
+						<div id="abcleft-unit_clone"
+							style="width: 160px; top: 0px; height: 600px; visibility: hidden;"
+							class="q2w3-widget-clone-abcleft"></div>
+						<div id="abcleft-unit"
+							style="width: 160px; top: 0px; position: fixed;"></div>
+					</div>
+					<div id="abcright" style="overflow: hidden; height: 600px;">
+						<div id="abcright-unit_clone"
+							style="width: 160px; top: 0px; height: 600px; visibility: hidden;"
+							class="q2w3-widget-clone-abcright"></div>
+						<div id="abcright-unit"
+							style="width: 160px; top: 0px; position: fixed;"></div>
+					</div>
+				</div>
+				<div class="main_container">
+					<div class="main-col" id="main_container">
+
+						<div id="shortlist_wrapper"></div>
+
+						<div class="box-gray">
+							<form method="get" action="https://freetuts.net/tim-khoa-hoc">
+								<h1
+									style="text-align: center; margin-bottom: 20px; font-size: 18px">DANH
+									SÁCH KHÁCH HÀNG ĐÃ MUA KHÓA HỌC TẠI FREETUTS.NET</h1>
+								<p>
+									Để các bạn an tâm hơn thì minh sẽ hiển thị danh sách khách hàng
+									đã từng <a href="#" title="khóa học">mua khóa học</a>
+									tại localhost:8762, mình muốn các bạn hiểu rằng mình là nơi bán
+									khóa học giá rẻ nhất, thay vì các bạn mua trực tiếp thì hãy mua
+									bên mình để tiết kiệm thêm từ 0% -&gt; 0% chi phí sau khi
+									giảm giá. Rất cám ơn các bạn đã tin tưởng và ủng hộ
+									localhost:8762 trong thời gian qua!
+								</p>
+							</form>
+						</div>
+						<div id="" style="margin-top: 0px">
+							<div class="table-responsive">
+								<div class="table-responsive">
+									<table class="table_coupon" style="margin-bottom: 0px">
+										<thead>
+											<tr>
+												<th width="25%">Khách hàng</th>
+												<th width="55%">Mua khóa</th>
+												<th width="10%">Giá mua</th>
+												<th width="10%">Giá gốc</th>
+											</tr>
+										</thead>
+										<tbody class="aff-price-wrapper" th:if="${listRegistration == null || listRegistration.size() <= 0}">
+											<tr>
+												<td colspan="4" style="text-align:center;">Không có học viên nào</td>
+											</tr>
+										</tbody>
+										<tbody class="aff-price-wrapper" th:each=" registration : ${listRegistration}">
+											<tr>
+												<td th:text="${registration.nameCustomer}">Nguyễn Văn Thành</td>
+												<td><a
+													style="text-decoration:none;"
+													th:href="@{'/course/detail?id='+${registration.idCourse}}"
+													th:text="${registration.titleCourse}"></a></td>
+												<td style="color: red">0đ</td>
+												<td>0đ</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<div style="margin-top: 20px"></div>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div class="sidebar main-sidebar" id="right_sidebar"
+					style="position: relative">
+					<div class="weather-widget blog widget weather-categories">
+						<div class="widget-head">
+							<h3 class="widget-title">
+								<span>CHỦ ĐỀ KHÓA HỌC<span></span></span>
+							</h3>
+						</div>
+						<div class="next-days">
+							<ol  th:each="postSub : ${listSubCategory}">
+								<li>
+									<div class="day-summary">
+										<div class="d-decs" style="padding-left: 10px">
+											<a
+												style="text-decoration:none;"
+												th:href="@{'/post/detail?id='+${postSub.idPost}}"
+												th:text="${postSub.name}">Khóa học lập trình</a>
+										</div>
+									</div>
+								</li>
+								
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/footer :: #footer_wrapper"></div>
+	<script type='text/javascript'
+		src='https://freetuts.net/public/theme/js/lib.js?v=424'></script>
+	<script type='text/javascript'
+		src='https://freetuts.net/public/theme/js/all.js?v=424'></script>
+</body>
+</html>

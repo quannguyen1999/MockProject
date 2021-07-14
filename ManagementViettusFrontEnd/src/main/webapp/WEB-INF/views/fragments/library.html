@@ -1,0 +1,91 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/library/shCoreDefault.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/library/style.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<!--===============================================================================================-->
+<script th:src="@{/static/js/library/jquery.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/library/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script th:src="@{/static/js/library/jquery.min.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/library/toastr.min.css}">	
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<link rel="shortcut icon" type="image/x-icon" href="https://freetuts.net/public/logo/icon.png?r=1" />
+<!--===============================================================================================-->
+<!-- giao dien cho dialog -->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/library/sweetalert2.css}">	
+<!--===============================================================================================-->
+<script th:src="@{/static/js/library/sweetalert2@11.js}"></script>
+<!--===============================================================================================-->
+<link rel='stylesheet' id='plugins-css'
+	href='https://freetuts.net/public/theme/css/style.css?v=424'
+	type='text/css' media='all' />
+<!--===============================================================================================-->
+
+<script>
+//to display navbar - menu
+$(document).ready(function() {
+	$.ajax({
+		type : 'GET',
+		contentType: "application/json; charset=utf-8",
+		url : 'http://localhost:8762/api/v1/category/listHeader',
+		success : function(e) {
+			var listCategory = e.data;
+			var resultHtml = "";
+			var count = 0;
+			for(var i=0;i<listCategory.length;i++){
+				if(i>=9){
+					if(count == 0){
+						resultHtml += '<li class="more menu-item menu-item-has-children menu-parent-item mom_default_menu_item menu-item-depth-0">';
+						resultHtml += '<a href="#" title="more"> ';
+						resultHtml += '<span class="menu-more"></span> <span class="menu-text">More</span>';
+						resultHtml += '</a>';
+						resultHtml += '<ul class="sub-menu ">';
+						count++;
+					}
+					resultHtml += '<li class="menu-item menu-parent-item mom_default_menu_item menu-item-depth-1">';
+					resultHtml += '<a style="text-decoration:none;" href="/demo/category/detail?id='+listCategory[i].idCategory+'" title="Tutorials">'+listCategory[i].name+'</a>';
+					resultHtml += '</li>';
+					if(listCategory.length == i){
+						resultHtml += "</ul> <i class='responsive-caret'></i>";
+					}
+				}else{
+					resultHtml += '<li class="menu-item menu-item-has-children menu-parent-item mom_default_menu_item menu-item-depth-0">';
+					
+					resultHtml += '<a style="text-decoration:none;" href="/demo/category/detail?id='+listCategory[i].idCategory+'" title="Tutorials">'+listCategory[i].name+'</a>';
+					
+					if(listCategory[i].listPost != null && listCategory[i].listPost.length >= 1){
+						var listPost = listCategory[i].listPost;
+						resultHtml += '<ul class="sub-menu ">';
+						for(let i=0;i<listPost.length;i++){
+							resultHtml += '<li class="menu-item  menu-parent-item mom_default_menu_item menu-item-depth-1">';
+							resultHtml += '<a style="text-decoration:none;" href="/demo/post/detail?id='+listPost[i].idPost+'" title="'+listPost[i].name+'"> '+listPost[i].name+'</a>';
+							resultHtml += '</li>';
+						}
+						resultHtml += "</ul> <i class='responsive-caret'></i> ";
+					}
+					resultHtml += '</li>';
+				}
+			}
+			$(".list-category").append(resultHtml);
+		},
+		error : function(e) {
+			var listErrorMessages = e.responseJSON.listErrorMessages;
+			dialogError(listErrorMessages[0].message);
+		}
+	});
+});
+</script>
+<!-- dùng toggle -->

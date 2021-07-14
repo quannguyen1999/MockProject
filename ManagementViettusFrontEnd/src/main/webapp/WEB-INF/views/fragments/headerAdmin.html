@@ -1,0 +1,421 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	
+	<div id="header-wrapper">
+		<style>
+	.bell{
+	  color: red;
+	  -webkit-animation: ring 4s .7s ease-in-out infinite;
+	  -webkit-transform-origin: 50% 4px;
+	  -moz-animation: ring 4s .7s ease-in-out infinite;
+	  -moz-transform-origin: 50% 4px;
+	  animation: ring 4s .7s ease-in-out infinite;
+	  transform-origin: 50% 4px;
+	}
+	
+	@-webkit-keyframes ring {
+	  0% { -webkit-transform: rotateZ(0); }
+	  1% { -webkit-transform: rotateZ(30deg); }
+	  3% { -webkit-transform: rotateZ(-28deg); }
+	  5% { -webkit-transform: rotateZ(34deg); }
+	  7% { -webkit-transform: rotateZ(-32deg); }
+	  9% { -webkit-transform: rotateZ(30deg); }
+	  11% { -webkit-transform: rotateZ(-28deg); }
+	  13% { -webkit-transform: rotateZ(26deg); }
+	  15% { -webkit-transform: rotateZ(-24deg); }
+	  17% { -webkit-transform: rotateZ(22deg); }
+	  19% { -webkit-transform: rotateZ(-20deg); }
+	  21% { -webkit-transform: rotateZ(18deg); }
+	  23% { -webkit-transform: rotateZ(-16deg); }
+	  25% { -webkit-transform: rotateZ(14deg); }
+	  27% { -webkit-transform: rotateZ(-12deg); }
+	  29% { -webkit-transform: rotateZ(10deg); }
+	  31% { -webkit-transform: rotateZ(-8deg); }
+	  33% { -webkit-transform: rotateZ(6deg); }
+	  35% { -webkit-transform: rotateZ(-4deg); }
+	  37% { -webkit-transform: rotateZ(2deg); }
+	  39% { -webkit-transform: rotateZ(-1deg); }
+	  41% { -webkit-transform: rotateZ(1deg); }
+	
+	  43% { -webkit-transform: rotateZ(0); }
+	  100% { -webkit-transform: rotateZ(0); }
+	}
+	
+	@-moz-keyframes ring {
+	  0% { -moz-transform: rotate(0); }
+	  1% { -moz-transform: rotate(30deg); }
+	  3% { -moz-transform: rotate(-28deg); }
+	  5% { -moz-transform: rotate(34deg); }
+	  7% { -moz-transform: rotate(-32deg); }
+	  9% { -moz-transform: rotate(30deg); }
+	  11% { -moz-transform: rotate(-28deg); }
+	  13% { -moz-transform: rotate(26deg); }
+	  15% { -moz-transform: rotate(-24deg); }
+	  17% { -moz-transform: rotate(22deg); }
+	  19% { -moz-transform: rotate(-20deg); }
+	  21% { -moz-transform: rotate(18deg); }
+	  23% { -moz-transform: rotate(-16deg); }
+	  25% { -moz-transform: rotate(14deg); }
+	  27% { -moz-transform: rotate(-12deg); }
+	  29% { -moz-transform: rotate(10deg); }
+	  31% { -moz-transform: rotate(-8deg); }
+	  33% { -moz-transform: rotate(6deg); }
+	  35% { -moz-transform: rotate(-4deg); }
+	  37% { -moz-transform: rotate(2deg); }
+	  39% { -moz-transform: rotate(-1deg); }
+	  41% { -moz-transform: rotate(1deg); }
+	
+	  43% { -moz-transform: rotate(0); }
+	  100% { -moz-transform: rotate(0); }
+	}
+	
+	@keyframes ring {
+	  0% { transform: rotate(0); }
+	  1% { transform: rotate(30deg); }
+	  3% { transform: rotate(-28deg); }
+	  5% { transform: rotate(34deg); }
+	  7% { transform: rotate(-32deg); }
+	  9% { transform: rotate(30deg); }
+	  11% { transform: rotate(-28deg); }
+	  13% { transform: rotate(26deg); }
+	  15% { transform: rotate(-24deg); }
+	  17% { transform: rotate(22deg); }
+	  19% { transform: rotate(-20deg); }
+	  21% { transform: rotate(18deg); }
+	  23% { transform: rotate(-16deg); }
+	  25% { transform: rotate(14deg); }
+	  27% { transform: rotate(-12deg); }
+	  29% { transform: rotate(10deg); }
+	  31% { transform: rotate(-8deg); }
+	  33% { transform: rotate(6deg); }
+	  35% { transform: rotate(-4deg); }
+	  37% { transform: rotate(2deg); }
+	  39% { transform: rotate(-1deg); }
+	  41% { transform: rotate(1deg); }
+	
+	  43% { transform: rotate(0); }
+	  100% { transform: rotate(0); }
+	}
+		</style>
+		<link th:if="${session.typeAccount == 'ADMIN'}"
+			th:replace="./fragments/libraryAdmin :: script" />
+		<!--===============================================================================================-->
+		<link th:if="${session.typeAccount == 'ADMIN'}"
+			th:replace="./fragments/libraryAdmin :: link" />
+		<script th:if="${session.typeAccount == 'ADMIN'}">
+				//cal ajax
+			var token = '[[${session.token}]]';
+			function callCountReport(){
+				$.ajax({
+					type : 'GET',
+					contentType: "application/json; charset=utf-8",
+					beforeSend : function(request) {
+						request.setRequestHeader("AccessToken", token);
+					},
+					url : 'http://localhost:8762/api/v1/report/findAll?page=0&size=5',
+					/*contentType: false, //Cần thiết
+					processData: false, //Cần thiết*/
+					success : function(e) {
+						console.log(e)
+						var fileResult = e.data;
+						 document.getElementById("messageInform").innerHTML =fileResult.totalElements;
+						
+						var data = fileResult.content;
+						var listDataHtml = "<table class='table table-dark table-striped' id='tableNotification'>";
+						for(var i = 0 ;i<data.length;i++){
+							listDataHtml = listDataHtml + "<tr>";
+							listDataHtml = listDataHtml + "<td width='60%'>";
+							listDataHtml = listDataHtml + data[i].message;
+							listDataHtml = listDataHtml + "</td>";
+							listDataHtml = listDataHtml + "<td>";
+							var today = new Date(data[i].createdDate);
+							var dd = String(today.getDate()).padStart(2, '0');
+							var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+							var yyyy = today.getFullYear();
+							listDataHtml = listDataHtml + "<span>"+dd+"/"+mm+"/"+yyyy+"</span>";
+							listDataHtml = listDataHtml + "</td>";
+							listDataHtml = listDataHtml + "</tr>";
+						}
+						listDataHtml = listDataHtml + "<tr>";
+						listDataHtml = listDataHtml + "<td colspan='3' style='align:center;text-align:center;margin:auto;' >";
+						listDataHtml = listDataHtml + "<a href='#' class='btn btn-primary' onclick='showMore();'>show more</a>";
+						listDataHtml = listDataHtml + "<input type='hidden' value='0' id='currentValueTablePage'>";
+						listDataHtml = listDataHtml + "</td>";
+						listDataHtml = listDataHtml + "</tr>";
+						listDataHtml = listDataHtml + "</table>";
+						document.getElementById("modelNotifications").innerHTML = listDataHtml;
+					},
+					error : function(e) {
+						console.log(e)
+						console.log(e.responseJSON)
+						var listErrorMessages = e.responseJSON.listErrorMessages;
+						dialogError(listErrorMessages)
+					}
+				});
+			}
+			callCountReport();
+			
+			
+			function showMore(){
+				var page = parseInt(document.getElementById("currentValueTablePage").value)+1;
+				$.ajax({
+					type : 'GET',
+					contentType: "application/json; charset=utf-8",
+					beforeSend : function(request) {
+						request.setRequestHeader("AccessToken", token);
+					},
+					url : 'http://localhost:8762/api/v1/report/findAll?page='+page+'&size=5',
+					/*contentType: false, //Cần thiết
+					processData: false, //Cần thiết*/
+					success : function(e) {
+						$('#modelNotifications tr:last-child').remove()
+						console.log(e)
+						var fileResult = e.data;
+						 document.getElementById("messageInform").innerHTML =fileResult.totalElements;
+						var data = fileResult.content;
+						console.log(data)
+						console.log(data.length)
+						if(data.length >= 1){
+							var listDataHtml = "";
+							for(var i = 0 ;i<data.length;i++){
+								listDataHtml = listDataHtml + "<tr>";
+								listDataHtml = listDataHtml + "<td width='60%'>";
+								listDataHtml = listDataHtml + data[i].message;
+								listDataHtml = listDataHtml + "</td>";
+								listDataHtml = listDataHtml + "<td>";
+								var today = new Date(data[i].createdDate);
+								var dd = String(today.getDate()).padStart(2, '0');
+								var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+								var yyyy = today.getFullYear();
+								listDataHtml = listDataHtml + "<span>"+dd+"/"+mm+"/"+yyyy+"</span>";
+								listDataHtml = listDataHtml + "</td>";
+								listDataHtml = listDataHtml + "</tr>";
+							}
+							listDataHtml = listDataHtml + "<tr>";
+							listDataHtml = listDataHtml + "<td colspan='3' style='align:center;text-align:center;margin:auto;' >";
+							listDataHtml = listDataHtml + "<a href='#' class='btn btn-primary' onclick='showMore();'>show more</a>";
+							listDataHtml = listDataHtml + "<input type='hidden' value='"+page+"' id='currentValueTablePage'>";
+							listDataHtml = listDataHtml + "</td>";
+							listDataHtml = listDataHtml + "</tr>";
+							$("#tableNotification").append(listDataHtml);
+						}
+					
+					},
+					error : function(e) {
+						console.log(e)
+						console.log(e.responseJSON)
+						var listErrorMessages = e.responseJSON.listErrorMessages;
+						dialogError(listErrorMessages)
+					}
+				});
+			}
+			
+			function connect() {
+				var socket = new SockJS('http://localhost:8762/gs-guide-websocket');
+				stompClient = Stomp.over(socket);
+				stompClient.connect({}, function(frame) {
+					console.log('Connected: ' + frame);
+					stompClient.subscribe('/topic/websocket/topic/reports', function(
+							greeting) {
+						console.log(greeting)
+						var jsonResult = JSON.parse(greeting.body);
+						console.log(jsonResult)
+						var getData =jsonResult.body.data;
+						var total = parseInt(document.getElementById("messageInform").innerText);
+						document.getElementById("messageInform").innerHTML =  parseInt(total + 1);
+						var today = new Date(getData.createdDate);
+						var dd = String(today.getDate()).padStart(2, '0');
+						var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+						var yyyy = today.getFullYear();
+						if(total == 0){
+							var listDataHtml = "<table class='table table-dark table-striped' id='tableNotification'>";
+							listDataHtml = listDataHtml + "<tr>";
+							listDataHtml = listDataHtml + "<td>";
+							listDataHtml = listDataHtml + getData.message;
+							listDataHtml = listDataHtml +' <span id="iconNotification"  class="bell fa fa-bell"></span>';
+							listDataHtml = listDataHtml + "</td>";
+							listDataHtml = listDataHtml + "<td>";
+							listDataHtml = listDataHtml + "<span>"+dd+"/"+mm+"/"+yyyy+"</span>";
+							listDataHtml = listDataHtml + "</td>";
+							listDataHtml = listDataHtml + "</tr>";
+							listDataHtml = listDataHtml + "</table>";
+							document.getElementById("modelNotifications").innerHTML = listDataHtml;
+						}else{
+							var dataHTML = "<tr>"
+							dataHTML = dataHTML + "<td>";
+							dataHTML = dataHTML + getData.message;
+							dataHTML = dataHTML +' <span id="iconNotification"  class="bell fa fa-bell"></span>';
+							dataHTML = dataHTML + "</td>";
+							dataHTML = dataHTML + "<td>";
+							dataHTML = dataHTML + "<span>"+dd+"/"+mm+"/"+yyyy+"</span>";
+							dataHTML = dataHTML + "</td>";
+							dataHTML = dataHTML + "</tr>";
+							$('#tableNotification tr:first').before(dataHTML);
+						}
+						dialogSuccess("bạn có thông báo lỗi mới");
+					});
+				});
+			}
+			connect();
+			
+			function deleteAllReport(){
+				Swal.fire({
+					icon: 'warning',
+					title: 'Xóa hết report',
+					text: "Bạn có chắc muốn xóa hết",
+					showDenyButton: true,
+					showCancelButton: true,
+					confirmButtonText: `Xác nhận`,
+					denyButtonText: `Hủy`
+				}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						type : 'GET',
+						contentType: "application/json; charset=utf-8",
+						beforeSend : function(request) {
+							request.setRequestHeader("AccessToken", token);
+						},
+						url : 'http://localhost:8762/api/v1/report/deleteAll',
+						/*contentType: false, //Cần thiết
+						processData: false, //Cần thiết*/
+						success : function(e) {
+							dialogSuccess("Xóa thành công");
+							document.getElementById("modelNotifications").innerHTML = '';
+							document.getElementById("messageInform").innerHTML = '0';
+						},
+						error : function(e) {
+							console.log(e)
+							console.log(e.responseJSON)
+							var listErrorMessages = e.responseJSON.listErrorMessages;
+							dialogError(listErrorMessages)
+						}
+					});
+				} else if (result.isDenied) {
+				}})
+				
+			}
+			
+			
+		</script>
+		<div class="topbar">
+			<div class="inner">
+				<div class="top-left-content">
+					<ul id="menu-top-menu" class="top-nav mom_visibility_desktop">
+						<li class="menu-item "><a title="HOSTING TỪ 9K/THÁNG"
+							th:href="@{~/demo/logout}"
+							rel="noopener noreferrer nofollow external">Đăng xuất</a></li>
+						<li class="menu-item "><a title="HOSTING TỪ 9K/THÁNG"
+							th:href="@{~/demo}" rel="noopener noreferrer nofollow external">Quay
+								lại trang client</a></li>
+
+						<li class="menu-item" th:if="${session.typeAccount == 'ADMIN'} "><a
+							href="#" rel="noopener noreferrer nofollow external"
+							data-toggle="modal" data-target="#notificationv"
+							>Thông
+								báo
+								 <span id="iconNotification"  class="bell fa fa-bell"></span>
+								 (<span id="messageInform" style="color:red;"> </span>)
+						</a></li>
+					</ul>
+					<!-- The Modal -->
+					<div class="modal fade "  id="notificationv">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					            <!-- Modal Header -->
+						        <div class="modal-header">
+						        	<table>
+						        		<tr>
+						        			<th width="60%">Nội dung</th>
+						        			<th>Thời gian tạo</th>
+						        		</tr>
+						        	</table>
+						        </div>
+					      <!-- Modal body -->
+					      <div class="modal-body" style="color:black;overflow-y: scroll;" id="modelNotifications">
+					        Modal body..
+					      </div>
+					       <!-- Modal footer -->
+					        <div class="modal-footer">
+					          <a onclick="deleteAllReport()" class="btn btn-danger">Xóa hết</a>
+					          <button type="button" class="btn btn-danger" data-dismiss="modal">Thoát</button>
+					        </div>
+					    </div>
+					  </div>
+					</div>
+					<div class="mom_visibility_device device-top-menu-wrap">
+						<div class="top-menu-holder">
+							<i class="fa-icon-reorder mh-icon"></i>
+						</div>
+						<ul id="menu-top-menu-1" class="device-top-nav">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<header class="header">
+			<div class="inner">
+				<div class="logo">
+					<a href="https://freetuts.net/" title="freetuts"> <img
+						src="https://freetuts.net/public/logo/logo.png?rand=5"
+						alt="freetuts" style="max-width: 160px; margin-top: -10px;" />
+					</a>
+				</div>
+				<div class="header-right ">
+					<div class="mom-e3lanat-wrap">
+						<div class="mom-e3lanat">
+							<div class="mom-e3lanat-inner">
+								<div class="mom-e3lan">
+									<div class="e3lan-code">
+										<div class="social-header">
+											<ul class="mom-social-icons">
+												<li class="facebook"><a class="vector_icon"
+													href="https://www.facebook.com/freetuts/" target="_blank"
+													rel="noopener noreferrer nofollow external"
+													title="no title"><i class="fa fa-facebook"
+														aria-hidden="true"></i></a></li>
+												<li class="youtube"><a class="vector_icon"
+													href="https://www.youtube.com/channel/UC0jGwW2AfbsGbuY_Z3jtkAg"
+													target="_blank" rel="noopener noreferrer nofollow external"
+													title="UC0jGwW2AfbsGbuY Z3jtkAg"><i
+														class="fa fa-youtube" aria-hidden="true"></i></a></li>
+												<li class="twitter"><a class="vector_icon"
+													href="https://twitter.com/freetuts_net" target="_blank"
+													rel="noopener noreferrer nofollow external"
+													title="freetuts net"><i class="fa fa-twitter"
+														aria-hidden="true"></i></a></li>
+												<li class="skype"><a target="_blank"
+													class="vector_icon" href="skype:thehalfheart?call"
+													title="skype thehalfheart call"><i class="fa fa-skype"
+														aria-hidden="true"></i></a></li>
+
+											</ul>
+										</div>
+
+										<div class="search-form default-search-form ">
+											<form method="get" action="https://www.google.com.vn/search"
+												target="_blank"
+												onsubmit="jQuery('#q1').val('site:freetuts.net ' + jQuery('#q_tmp').val())">
+												<input class="sf" type="text" placeholder="Search ..."
+													value="" onkeypress="" autocomplete="off" id="q_tmp">
+												<input type="hidden" name="q" id="q1" value="" />
+												<button class="button" type="submit">
+													<i class="fa fa-search" style="color: black; height: 10px"></i>
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</header>
+	</div>
+</body>
+</html>

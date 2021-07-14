@@ -1,0 +1,200 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--===============================================================================================-->
+<title>Bảng thuật ngữ</title>
+<link rel="shortcut icon" type="image/x-icon"
+	href="https://freetuts.net/public/logo/icon.png?r=1" />
+<!--===============================================================================================-->
+<link rel='stylesheet' id='plugins-css'
+	href='https://freetuts.net/public/theme/css/style.css?v=424'
+	type='text/css' media='all' />
+<script>
+	$(document)
+			.ready(
+					function() {
+						var checkValue = '[[${postPage}]]';
+						if (checkValue.length >= 1) {
+							var totalPage = '[[${postPage} == null ? -1 : ${postPage.totalPages}]]';
+							var pageChoose = '[[${pageChoose}]]';
+							var limitPage = 5;
+							var url = "/demo/category/detail?id=" + pageChoose;
+							var valueHtml = '<ul  class="pagination">';
+							console.log(totalPage)
+							if (pageChoose >= 1 && limitPage < totalPage) {
+								var startIndex = 0;
+								if (pageChoose != 0) {
+									valueHtml += '<li class="active"><a href="'
+											+ url + '?page=' + 0
+											+ '">\<<</a></li>';
+									startIndex = pageChoose - 1;
+								}
+								if (pageChoose == (totalPage - 1)) {
+									console.log(totalPage)
+									for (var i = totalPage - limitPage; i < totalPage; i++) {
+										if (pageChoose == i) {
+											valueHtml += '<li class="active"><a href='
+													+ url
+													+ '?page='
+													+ i
+													+ '">'
+													+ i + '</a></li>';
+										} else {
+											valueHtml += '<li ><a href="' + url
+													+ '?page=' + i + '">' + i
+													+ '</a></li>';
+										}
+									}
+								} else {
+									for (var i = startIndex; i < limitPage
+											+ startIndex; i++) {
+										if (pageChoose == i) {
+											valueHtml += '<li class="active"><a href="'
+													+ url
+													+ '?page='
+													+ i
+													+ '">'
+													+ i + '</a></li>';
+										} else {
+											valueHtml += '<li ><a href="' + url
+													+ '?page=' + i + '">' + i
+													+ '</a></li>';
+										}
+									}
+									totalPage--;
+									valueHtml += '<li class="active"><a href="'
+											+ url + '?page=' + totalPage
+											+ '">\>></a></li>';
+								}
+							} else if (pageChoose >= 1) {
+								for (var i = 0; i < totalPage; i++) {
+									if (pageChoose == i) {
+										valueHtml += '<li class="active"><a href="'
+												+ url
+												+ '?page='
+												+ i
+												+ '">'
+												+ i
+												+ '</a></li>';
+									} else {
+										valueHtml += '<li ><a href="' + url
+												+ '?page=' + i + '">' + i
+												+ '</a></li>';
+									}
+								}
+							}
+							valueHtml += '</ul>';
+							$("#page").append(valueHtml);
+						}
+					});
+</script>
+<link th:replace="fragments/library :: script" />
+<link th:replace="fragments/library :: link" />
+</head>
+<body id="tut_concept"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/header :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigation :: #navigation"></div>
+		<div class="boxed-content-wrapper clearfix">
+			<div class="inner" id="adheader" style="margin-bottom: 20px"></div>
+			<div class="inner ">
+				<nav class="second_navigation">
+					<div>
+						<div
+							th:replace="./manageGlossay/listCharacter :: #IdlistCharacter"></div>
+					</div>
+					<!-- <span class="more_item"><i class="momizat-icon-arrow-down"></i></span> -->
+				</nav>
+			</div>
+
+			<div class="inner">
+
+				<div class=""
+					style="line-height: 30px; margin-bottom: 10px; font-size: 15px">
+					<div itemscope itemtype="https://schema.org/BreadcrumbList">
+
+						<span itemprop="itemListElement" itemscope
+							itemtype="https://schema.org/ListItem"> <a itemprop="item"
+							href="/demo/" title="Trang chủ"> <span itemprop="name">Home</span>
+								<meta itemprop="position" content="1" />
+						</a>
+						</span> > <span itemprop="itemListElement" itemscope itemtype="#">
+							<a itemprop="item" href="#"
+							style="text-decoration: none; color: black;"
+							th:title="${category.name}"> <span itemprop="name"
+								th:text="${category.name}">Thuật ngữ</span>
+								<meta itemprop="position" content="2" />
+						</a>
+						</span>
+
+					</div>
+				</div>
+
+				<ul id="content-list">
+				</ul>
+
+			</div>
+
+			<div class="inner" style="margin-top: 20px;">
+				<div class="abc2side">
+					<div id="abcleft" style="overflow: hidden">
+						<div id="abcleft-unit"></div>
+					</div>
+					<div id="abcright" style="overflow: hidden">
+						<div id="abcright-unit"></div>
+					</div>
+				</div>
+				<div class="main_container">
+					<div class="main-col" id="main_container">
+						<div id="bbpress-forums">
+							<ul class="bbp-forums bbp-forums-category" id="idListGlossary"
+								style="margin-top: 0px">
+								<li th:if="${postPage == null || postPage.content.size() < 1}"
+									class="bbp-header">
+									<ul class="forum-titles">
+										<li class="bbp-forum-info">Không có danh sách thuật ngữ
+											nào</li>
+									</ul>
+								</li>
+								<li th:if="${postPage != null && postPage.content.size() >= 1}"
+									class="bbp-header">
+									<ul class="forum-titles">
+										<li class="bbp-forum-info">Bảng các định nghĩa</li>
+									</ul>
+								</li>
+								<li th:if="${postPage != null && postPage.content.size() >= 1}"
+									th:each="post : ${postPage.content}" class="bbp-body">
+									<ul
+										class="loop-item-0 odd bbp-forum-status-open bbp-forum-visibility-publish forum type-forum status-publish">
+										<li class="bbp-forum-info"><a
+											style="text-decoration: none;" class="bbp-forum-title"
+											th:href="@{'/post/detailGlossary?id='+${post.idPost}}"
+											th:text="${post.name}"></a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div id="page"></div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/lib.js?v=424'></script>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/ads.js?v=424'></script>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/all.js?v=424'></script>
+</body>
+</html>

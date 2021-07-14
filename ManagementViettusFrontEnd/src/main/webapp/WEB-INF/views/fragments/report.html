@@ -1,0 +1,89 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div class="tool" id="tool">
+		<link 
+			th:replace="./fragments/libraryAdmin :: script" />
+		<!--===============================================================================================-->
+		<link
+			th:replace="./fragments/libraryAdmin :: link" />
+		<script>
+			function connectClient() {
+				var socket = new SockJS('http://localhost:8762/gs-guide-websocket');
+				stompClient = Stomp.over(socket);
+				stompClient.connect({}, function(frame) {
+					console.log('Connected: ' + frame);
+					stompClient.subscribe('/topic/websocket/topic/reports', function(
+							greeting) {
+						var jsonResult = JSON.parse(greeting.body);
+			           	 console.log(jsonResult)
+			           	 console.log(jsonResult.body.data)
+			           	 document.getElementById("messageInform").innerHTML = jsonResult.body.data;
+					});
+				});
+			}
+			$(document).ready(function(){
+					$("#share").click(function(){
+						connectClient();
+					});
+					$("#send_message_error").click(function(){
+						 var value = $("#error_question").val();
+						if(value.length <= 15){
+							dialogError("Vui lòng nhập hơn 16 ký tự");
+						}else{
+							stompClient.send("/app/websocket/report", {}, JSON.stringify({'name': value}));
+							$("#error_question").val("");
+							dialogSuccess("Gửi thành công");
+						}
+					});
+			});
+		</script>
+		<div class="tcontent">
+			<div class="function">
+				<div class="func-item" id="news-data">
+					<p
+						style="padding: 10px 10px 0px 10px; font-weight: bold; font-size: 13px;">BÀI
+						VIẾT</p>
+				</div>
+				<div class="func-item" id="share-data">
+					<div style="padding: 15px 20px 0px 20px;">
+						<div class="mobile-menu" id="hotlink_content">
+							<p>
+								Nếu bạn phát hiện lỗi sai link, nội dung sai, hay một lỗi bất kì
+								nào đó <strong>trên trang này</strong> thì hãy cho mình biết
+								nhé. Cám ơn bạn!
+							</p>
+							<p id="error_remove">
+								<textarea id="error_question" cols="40" rows="5"
+									placeholder="Nhập nội dung lỗi tại đây"></textarea>
+							</p>
+							<p>
+								<input style="margin-left: 20px" type="submit" 
+									value="Gửi báo lỗi" id="send_message_error">
+							</p>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" rel="nofollow" class="menu-click" id="news" title=" ">
+				<img src="https://freetuts.net/public/tool/notice.png"
+				alt="notice png" /> <span>LIST</span>
+			</a> <a href="https://freetuts.net/" title="no title"> <img
+				src="https://freetuts.net/public/tool/home.png" alt="home png" /> <span>HOME</span>
+			</a> <a href="#" class="menu-click" id="share" rel="nofollow"
+				target="_blank" title=" "> <img
+				src="https://freetuts.net/public/tool/hot.gif" alt="hot gif" /> <span>BÁO
+					<br />LỖI
+			</span>
+			</a> <a href="#" rel="nofollow" id="totop" title=" "> <img
+				src="https://freetuts.net/public/tool/top.png" alt="top png" /> <span>TOP</span>
+			</a>
+			<div style="clear: both"></div>
+		</div>
+	</div>
+</body>
+</html>

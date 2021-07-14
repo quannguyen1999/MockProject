@@ -1,0 +1,180 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--===============================================================================================-->
+<title>Quản lý liên lạc</title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/swal.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/pagination.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toggle.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/toggle.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/box.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/list.css}">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
+<style type="text/css">
+.error {
+	color: red;
+	font-weight: bold;
+}
+</style>
+<script>
+	var domain = 'http://localhost:8762';
+	var token = '[[${session.token}]]';
+	$(document).ready(
+			function() {
+				//this function to excute pagination and return by tag #page
+				excuteListPagination('[[${postPage.totalPages}]]',
+						'[[${pageChoose}]]', "/demo/contact/list?page=");
+
+			});
+	function validateForm() {
+		  var x = document.forms["formData"]["email"].value;
+		  var error= document.getElementById("errorSearch");
+		  if (x == "") {
+			  error.innerHTML= "Must be filled out";
+			  return false;
+		  }
+		}
+
+	//excute delete by swal
+	function btnXoa(data) {
+		excuteSwalDelete(token, domain + '/api/v1/contact/delete?id=' + data,
+				'Xóa liên hệ');
+	}
+</script>
+<style>
+.error{
+	color:red;
+}
+
+#formSearch {
+	width: 900px;
+	margin: auto;
+	border: 1px solid white;
+}
+
+#main {
+	width: 40%;
+	height: 50vh;
+	text-align: center;
+	margin:auto;
+}
+
+#formSearch table td {
+    word-wrap: break-word;         /* All browsers since IE 5.5+ */
+    overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+}
+
+#formSearch{
+	margin-left:20px;
+	 display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  grid-gap: 10px;
+  padding: 10px;
+}
+#formSearch button, #formSearch a{
+	width:100%;	
+}
+.row{
+	padding-right:24px;
+  text-align: center;
+}
+</style>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/headerAdmin :: #header-wrapper"></div>
+		<div
+			th:replace="./fragments/navigationAdmin :: ChooseNavigation(choose='manageContact')"></div>
+	</div>
+	<div id="main">
+		<div class="fof">
+			<h2>Quản lý liên lạc</h2>
+			<div class="" style="text-align:center;margin:auto;width:50%;" id="">
+				<span style="color: #0563af; font-weight: bold;">Lọc tìm kiếm
+				</span>
+				<form id="formData" accept-charset="utf-8"  onsubmit="return validateForm()" 
+					th:action="@{listByEmail}" action="#" method="post" style="margin:auto;width:55%;">
+					<div class="search-container"
+						style="width:100%; text-align: left;">
+						
+						<select id="chooseSearch">
+							<option value="0">Tìm theo email</option>
+							<option value="1">Tìm theo số điện thoại</option>
+						</select>
+						<input type="search" name="email" id="email" placeholder="Search..."
+							class="search-input form-control">
+						<button type="submit" class="search-btn btn btn-success form-control">
+							<i class="fas fa-search"></i>
+						</button>
+						
+					</div>
+					<span class="error" id="errorSearch"> *</span>
+				</form>
+			</div>
+			<br>
+			<table class="table">
+				<thead class="thead-dark">
+					<tr>
+						<th>Tiêu đề</th>
+						<th>Tên</th>
+						<th>Ngày tạo</th>
+						<th>Email</th>
+						<th>Số điện thoại</th>
+						<th>Địa chỉ</th>
+						<th>Nội dung</th>
+						<th>Chức năng</th>
+					</tr>
+				</thead>
+				
+				<tbody th:each=" contact : ${postPage.content}">
+					<tr>
+						<td th:utext="${contact.title}">John</td>
+						<td th:utext="${contact.name}"></td>
+						<td th:utext="${contact.dateCreated}"></td>
+						<td th:utext="${contact.email}"></td>
+						<td th:utext="${contact.phone}"></td>
+						<td th:utext="${contact.address}"></td>
+						<td>
+							<span th:if="${contact.content.length() > 30}"
+									th:text="${#strings.substring(T(org.jsoup.Jsoup).parse(contact.content).text(),0,30)+'...'}"
+							>
+							</span>
+							<span th:if="${contact.content.length() <= 40}"
+							 th:utext="${contact.content}"
+							>
+							
+							</span>
+						
+						</td>
+						<td><a th:onclick="|btnXoa('${contact.idContact}')|"
+							class="btn btn-danger" id="btnXoa">Xóa</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="page"></div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

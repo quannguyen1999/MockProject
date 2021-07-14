@@ -1,0 +1,104 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="header-wrapper">
+		<div class="topbar">
+			<div class="inner">
+				<div class="top-left-content">
+					<ul id="menu-top-menu" class="top-nav mom_visibility_desktop">
+						<li class="menu-item "><a
+							href="https://tinohost.com/cloud-hosting/?php=213"
+							title="HOSTING TỪ 9K/THÁNG" 
+							rel="noopener noreferrer nofollow external">Hosting từ
+								9k/tháng</a></li>
+						<li class="menu-item "><a
+							href="https://tinohost.com/servers/cloud-vps/?php=213"
+							title="VPS TỪ 139K/THÁNG" target="_blank"
+							rel="noopener noreferrer nofollow external">VPS từ 139k/tháng</a></li>
+
+						<li class="menu-item "><a href="https://danhgiawp.com"
+							title="ĐÁNH GIÁ WP" target="_blank"
+							rel="noopener noreferrer nofollow external">Đánh giá WP</a></li>
+						<li th:if="${session.token == null}" class="menu-item "><a th:href="@{/login}"
+							title="ĐÁNH GIÁ WP" 
+							rel="noopener noreferrer nofollow external">Đăng nhập</a></li>
+						<li  th:if="${session.token != null}" class="menu-item "><a th:href="@{/logout}"
+							title="ĐÁNH GIÁ WP" 
+							rel="noopener noreferrer nofollow external">Đăng xuất</a>
+						</li>
+						<li  th:if="${session.token != null}" class="menu-item "><a th:href="@{/welcome}"
+							title="ĐÁNH GIÁ WP" 
+							rel="noopener noreferrer nofollow external">Truy cập trang quản lý</a>
+						</li>
+					</ul>
+					<div class="mom_visibility_device device-top-menu-wrap">
+						<div class="top-menu-holder">
+							<i class="fa-icon-reorder mh-icon"></i>
+						</div>
+						<ul id="menu-top-menu-1" class="device-top-nav">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<header class="header">
+			<div class="inner">
+				<div class="logo">
+					<a href="https://freetuts.net/" title="freetuts"> <img
+						src="https://freetuts.net/public/logo/logo.png?rand=5"
+						alt="freetuts" style="max-width: 160px; margin-top: -10px;" />
+					</a>
+				</div>
+				<div class="header-right ">
+					<div class="mom-e3lanat-wrap">
+						<div class="mom-e3lanat">
+							<div class="mom-e3lanat-inner">
+								<div class="mom-e3lan">
+									<div class="e3lan-code">
+										<div class="social-header">
+											<ul class="mom-social-icons">
+												<li class="facebook"><a class="vector_icon"
+													href="https://www.facebook.com/freetuts/" target="_blank"
+													rel="noopener noreferrer nofollow external"
+													title="no title"><i class="fa fa-facebook"
+														aria-hidden="true"></i></a></li>
+												<li class="youtube"><a class="vector_icon"
+													href="https://www.youtube.com/channel/UC0jGwW2AfbsGbuY_Z3jtkAg"
+													target="_blank" rel="noopener noreferrer nofollow external"
+													title="UC0jGwW2AfbsGbuY Z3jtkAg"><i
+														class="fa fa-youtube" aria-hidden="true"></i></a></li>
+												<li class="twitter"><a class="vector_icon"
+													href="https://twitter.com/freetuts_net" target="_blank"
+													rel="noopener noreferrer nofollow external"
+													title="freetuts net"><i class="fa fa-twitter"
+														aria-hidden="true"></i></a></li>
+												<li class="skype"><a target="_blank"
+													class="vector_icon" href="skype:thehalfheart?call"
+													title="skype thehalfheart call"><i class="fa fa-skype"
+														aria-hidden="true"></i></a></li>
+											</ul>
+										</div>
+										<div class="search-form default-search-form ">
+											<form method="get" th:action="@{/post/search}">
+												<input class="sf" type="text" placeholder="Search ..."
+													value="" onkeypress="" name="urlRequest" autocomplete="off" id="q_tmp">
+												<button class="button" type="submit">
+													<i class="fa fa-search" style="color: black; height: 10px"></i>
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</header>
+	</div>
+</body>
+</html>

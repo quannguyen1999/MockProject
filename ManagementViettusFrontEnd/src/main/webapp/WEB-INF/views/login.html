@@ -1,0 +1,60 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Đăng nhập</title>
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: link" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/login.css}">
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--============================================receive message from attribute=================================================-->
+<script th:src="@{/static/js/message.js}"></script>
+<!--===============================================================================================-->
+<script>
+$(document).ready(function() {
+	//reset from
+	$("#btnXoaRong").click(function() {
+		 $("#formLogin").trigger("reset");
+	});
+	
+	//receive message then show dialog
+	var messageSuccess = '[[${messageSuccess}]]';
+	var messageError = '[[${messageError}]]';
+	receiveMessageFromControllerAndShowDialog(messageSuccess, messageError);
+});
+</script>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="#">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="fragments/header :: #header-wrapper"></div>
+		<div th:replace="fragments/navigation :: #navigation"></div>
+	</div>
+	<div>
+		<form id="formLogin" th:action="@{/login}" method="post" style="margin-top:20px;margin-bottom:20px;">
+			<div class="box">
+				<p style="background-color: #eeeeee; text-align: left;">Đăng nhập</p>
+				<div class="login">
+					<input type="text" name="username" class="form-control"
+						placeholder="User Name" required="" autofocus="" />
+					<input type="password" name="password" class="form-control"
+						placeholder="Password" required="" autofocus="" />
+					<button class="btn btn-success btn-block center" type="submit">Xác nhận</button>
+					<a style="margin-top:5px;" id="btnXoaRong" class="btn btn-primary btn-block center" href="#">Xóa rỗng</a>
+						<p>Or</p>
+					<a style="margin-top:5px;" class="btn btn-danger btn-block center" href="#">Quên mật khẩu</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:replace="fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

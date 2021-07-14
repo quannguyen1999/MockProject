@@ -1,0 +1,400 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+<!--===============================================================================================-->
+<title th:if="${post!=null}"
+	th:text="@{post != null ? ${post.name} : 'Không tìm thấy'}">Detail
+	category</title>
+<!--===============================================================================================-->
+<style>
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+#content {
+	font-family: 'Times New Roman', Times, serif;
+	margin: auto;
+	width: 1200px;;
+}
+
+#content-list {
+	list-style-type: none;
+	padding: 20px 0px 20px 0px;;
+}
+
+#content-list li a, .title-content-v2 a {
+	text-decoration: none;
+	color: orange;
+}
+
+#content-list li a:hover, .title-content-v2 a:hover, .title-content-v2 a:hover
+	{
+	transition: 1s;
+	color: black;
+}
+
+#content-list li {
+	display: inline;
+}
+
+#content-list li::after {
+	content: " > ";
+}
+
+#content-list li:last-child:after {
+	content: "";
+}
+
+.box, .title-box, .title-content-v2 {
+	padding: 20px;
+	border: 1px solid #E0E0E0;
+	width: 800px;
+	float: left;
+}
+
+.box-right {
+	padding-left: 40px;;
+	width: 300px;;
+	float: left;
+}
+
+.box h1 {
+	font-size: 25px;;;
+	padding-top: 20px;
+	padding-bottom: 20px;;
+}
+
+.box p, .title-content-v2 {
+	font-size: 20px;;
+}
+
+.box-ad {
+	padding: 35px 250px 35px 250px;;
+}
+
+.box-ad {
+	width: 100%;
+	height: auto;
+}
+
+.title-box {
+	width: 90%;;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 20px 0px 0px 0px;;
+	background-color: white;
+}
+
+.title-box p {
+	font-size: 20px;;;
+	color: red;
+}
+
+.title-box a {
+	color: orange;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.title-box a:hover {
+	transition: 1s;
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.title-box, .title-content {
+	overflow: auto;
+	clear: left;
+}
+
+#author {
+	color: gray;
+	font-size: 16px;
+	padding-bottom: 20px;;
+}
+
+.title-content-v2 {
+	border: 1px solid #E0E0E0;
+	background-color: #F9F9F9;
+	line-height: 25px;
+	margin-bottom: 20px;
+	margin-top: 10px;;
+}
+
+.title-content-v2 a {
+	color: black;
+}
+
+.title-content-v2 a:hover {
+	color: orange;
+}
+
+.title-content-v2 #title {
+	font-size: 25px;;;
+	width: 100%;;
+	padding-bottom: 20px;;
+}
+
+.title-content-v2 img {
+	width: 150px;
+	height: auto;
+	float: left;
+}
+
+.title-content-v2 #topic-right {
+	width: 70%;;
+	float: left;
+	padding-left: 20px;
+}
+
+.content-menu {
+	border-left: 5px solid #2F6E91;
+	width: 100%;;
+	background-color: #EDEDED;
+	padding: 8px 0px 10px 15px;;
+}
+
+.content-menu ul {
+	text-decoration: none;
+}
+
+.content-menu ul li {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	display: inline;
+	padding-right: 15px;;
+}
+
+.content-menu ul li:hover {
+	background-color: #FFFFFF;
+}
+
+.content-menu ul li a {
+	text-decoration: none;
+	color: black;
+}
+
+@media screen and (max-width:1200px) {
+	#content {
+		font-family: 'Times New Roman', Times, serif;
+		margin: auto;
+		width: 80%;
+	}
+	.box, .title-box, .title-content-v2 {
+		padding: 20px;
+		border: 1px solid #E0E0E0;
+		width: 100%;
+		float: left;
+	}
+	.box-ad {
+		padding-left: 30%;
+		padding-right: 20%;;
+	}
+	.box-ad img {
+		width: 350px;
+		height: 300px;;
+	}
+}
+
+@media screen and (max-width:720px) {
+	.box-ad {
+		padding-left: 10%;
+		padding-right: 10%;;
+	}
+	.title-content-v2 #topic-right {
+		width: 50%;;
+		float: left;
+		padding-left: 20px;
+	}
+}
+</style>
+<script>
+	var messageSuccess = '[[${messageSuccess}]]';
+	var messageError = '[[${meesageError}]]';
+	console.log("start");
+	console.log("success:" + messageSuccess)
+	console.log("ok error:" + messageError)
+	function myMessage() {
+		if (messageSuccess != 'null' && messageSuccess.length >= 1) {
+			dialogSuccess(messageSuccess);
+		}
+		if (messageError != 'null' && messageError.length >= 1) {
+			dialogError(messageError);
+		}
+	}
+	setTimeout(myMessage, 100);
+</script>
+<script>
+	$(document)
+			.ready(
+					function() {
+						var checkValue = '[[${postPage}]]';
+						if (checkValue.length >= 1) {
+							var totalPage = '[[${postPage} == null ? -1 : ${postPage.totalPages}]]';
+							var pageChoose = '[[${pageChoose}]]';
+							var limitPage = 5;
+							var url = "/demo/category/detail?id=" + pageChoose;
+							var valueHtml = '<ul  class="pagination">';
+							console.log(totalPage)
+							if (pageChoose >= 1 && limitPage < totalPage) {
+								var startIndex = 0;
+								if (pageChoose != 0) {
+									valueHtml += '<li class="active"><a href="'
+											+ url + '?page=' + 0
+											+ '">\<<</a></li>';
+									startIndex = pageChoose - 1;
+								}
+								if (pageChoose == (totalPage - 1)) {
+									console.log(totalPage)
+									for (var i = totalPage - limitPage; i < totalPage; i++) {
+										if (pageChoose == i) {
+											valueHtml += '<li class="active"><a href='
+													+ url
+													+ '?page='
+													+ i
+													+ '">'
+													+ i + '</a></li>';
+										} else {
+											valueHtml += '<li ><a href="' + url
+													+ '?page=' + i + '">' + i
+													+ '</a></li>';
+										}
+									}
+								} else {
+									for (var i = startIndex; i < limitPage
+											+ startIndex; i++) {
+										if (pageChoose == i) {
+											valueHtml += '<li class="active"><a href="'
+													+ list
+													+ '?page='
+													+ i
+													+ '">' + i + '</a></li>';
+										} else {
+											valueHtml += '<li ><a href="' + url
+													+ '?page=' + i + '">' + i
+													+ '</a></li>';
+										}
+									}
+									totalPage--;
+									valueHtml += '<li class="active"><a href="'
+											+ url + '?page=' + totalPage
+											+ '">\>></a></li>';
+								}
+							} else if (pageChoose >= 1) {
+								for (var i = 0; i < totalPage; i++) {
+									if (pageChoose == i) {
+										valueHtml += '<li class="active"><a href="'
+												+ url
+												+ '?page='
+												+ i
+												+ '">'
+												+ i
+												+ '</a></li>';
+									} else {
+										valueHtml += '<li ><a href="' + url
+												+ '?page=' + i + '">' + i
+												+ '</a></li>';
+									}
+								}
+							}
+							valueHtml += '</ul>';
+							$("#page").append(valueHtml);
+						}
+
+					});
+</script>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/header :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigation :: #navigation"></div>
+	</div>
+	<div id="content">
+		<div class="content-menu">
+			<ul>
+				<li th:each="postSub : ${listSubCategory}"><a
+					th:href="@{'/post/detail?id='+${postSub.idPost}}"
+					th:text="${postSub.name}">Phỏng vấn</a></li>
+			</ul>
+		</div>
+		<ul id="content-list">
+			<li><a th:href="@{/}">Home</a></li>
+			<li><a th:if="${post != null}"
+				th:href="${'/demo/category/detail?id='+post.idCategory}"
+				th:text="${post.nameCategory}">Interview</a></li>
+			<li><a th:if="${post != null}" th:text="${post.name}"
+				style="color: black;"></a></li>
+		</ul>
+		<div class="box" th:if="${post != null}">
+			<h1 th:text="${post.name}">Interview</h1>
+			<p id="author">
+				Đăng bởi <span th:text="${post.userName}">Admini</span> - Vào Ngày:
+				<span th:text="${post.dateCreated}">05-05-2021</span>
+			</p>
+			
+			<span class="entry-content" th:utext="${post.content}"></span>
+			
+			<div class="title-box">
+				<p>
+					Bình luận đã đóng, nếu có thắc mắc hãy đặt câu hỏi tại <a
+						href="https://hoicode.com" title="hỏi code" target="_blank"
+						rel="noopener noreferrer nofollow external">hoicode.com</a> để
+					admin trả lời.
+				</p>
+			</div>
+
+		</div>
+		<div class="box-right" th:if="${post != null}">
+			<a href="#"
+				target="_blank"> <img
+				src="https://i.pinimg.com/originals/27/94/6a/27946a99657cddf0cbde79a7e4e6f51f.gif"
+				style="width: 100%; height: auto;">
+			</a>
+		</div>
+		<div th:if="${postPage != null}">
+			<div th:each="post : ${postPage.content}">
+				<div class="title-content-v2">
+					<div id="title">
+						<a th:href="${'/demo/post/detail?id='+post.idPost}"
+							th:text="${post.name}">Cache là gì ? Có những loại cache nào</a>
+					</div>
+					<a id="image-topic-left"
+						th:href="${'/demo/post/detail?id='+post.idPost}" target="_blank">
+						<img th:src="${post.image}">
+					</a>
+					<div id="topic-right">
+						<a
+						th:href="${'/demo/post/detail?id='+post.idPost}"
+						 th:text="${#strings.substring(T(org.jsoup.Jsoup).parse(post.content).text(),0,100)+'...'}">Trình duyệt sau khi sử dụng một thời gian sẽ có hiện tượng lag,
+						tải chậm, gây ...</a></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="title-content-v2" id="page"
+			style="text-align: center; background-color: white; border: 1px solid white;">
+		</div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--===============================================================================================-->
+<title
+	th:text="${session.typeAccount == 'ADMIN' ? 'Welcome, admin' : 'Welcome, collbarator'}"></title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--============================================receive message from attribute=================================================-->
+<script th:src="@{/static/js/message.js}"></script>
+<script>
+	$(document).ready(
+			function() {
+				//receive message then show dialog
+				var messageSuccess = '[[${messageSuccess}]]';
+				var messageError = '[[${meesageError}]]';
+				receiveMessageFromControllerAndShowDialog(messageSuccess,
+						messageError);
+			});
+</script>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<!-- >div sec:authorize="hasRole('USER')">Has Role USER</div-->
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/headerAdmin :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigationAdmin :: #navigation"></div>
+	</div>
+	<div id="main">
+		<div class="fof">
+			<h1>Welcome</h1>
+		</div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

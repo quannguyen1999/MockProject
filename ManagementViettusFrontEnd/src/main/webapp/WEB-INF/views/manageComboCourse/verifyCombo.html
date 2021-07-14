@@ -1,0 +1,389 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+<!--===============================================================================================-->
+<title th:if="${post!=null}"
+	th:text="@{post != null ? ${post.name} : 'Không tìm thấy'}">Detail
+	category</title>
+<!--===============================================================================================-->
+<style>
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+#content {
+	font-family: 'Times New Roman', Times, serif;
+	margin: auto;
+	width: 1200px;;
+}
+
+#content-list {
+	list-style-type: none;
+	padding: 20px 0px 20px 0px;;
+}
+
+#content-list li a, .title-content-v2 a {
+	text-decoration: none;
+	color: orange;
+}
+
+#content-list li a:hover, .title-content-v2 a:hover, .title-content-v2 a:hover
+	{
+	transition: 1s;
+	color: black;
+}
+
+#content-list li {
+	display: inline;
+}
+
+#content-list li::after {
+	content: " > ";
+}
+
+#content-list li:last-child:after {
+	content: "";
+}
+
+.box, .title-box, .title-content-v2 {
+	padding: 20px;
+	border: 1px solid #E0E0E0;
+	width: 800px;
+	float: left;
+}
+
+.box-right {
+	padding-left: 40px;;
+	width: 300px;;
+	float: left;
+}
+
+.box h1 {
+	font-size: 25px;;;
+	padding-top: 20px;
+	padding-bottom: 20px;;
+}
+
+.box p, .title-content-v2 {
+	font-size: 20px;;
+}
+
+.box-ad {
+	padding: 35px 250px 35px 250px;;
+}
+
+.box-ad {
+	width: 100%;
+	height: auto;
+}
+
+.title-box {
+	width: 90%;;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 20px 0px 0px 0px;;
+	background-color: white;
+}
+
+.title-box p {
+	font-size: 20px;;;
+	color: red;
+}
+
+.title-box a {
+	color: orange;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.title-box a:hover {
+	transition: 1s;
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.title-box, .title-content {
+	overflow: auto;
+	clear: left;
+}
+
+#author {
+	color: gray;
+	font-size: 16px;
+	padding-bottom: 20px;;
+}
+
+.title-content-v2 {
+	border: 1px solid #E0E0E0;
+	background-color: #F9F9F9;
+	line-height: 25px;
+	margin-bottom: 20px;
+	margin-top: 10px;;
+}
+
+.title-content-v2 a {
+	color: black;
+}
+
+.title-content-v2 a:hover {
+	color: orange;
+}
+
+.title-content-v2 #title {
+	font-size: 25px;;;
+	width: 100%;;
+	padding-bottom: 20px;;
+}
+
+.title-content-v2 img {
+	width: 150px;
+	height: auto;
+	float: left;
+}
+
+.title-content-v2 #topic-right {
+	width: 70%;;
+	float: left;
+	padding-left: 20px;
+}
+
+.content-menu {
+	border-left: 5px solid #2F6E91;
+	width: 100%;;
+	background-color: #EDEDED;
+	padding: 8px 0px 10px 15px;;
+}
+
+.content-menu ul {
+	text-decoration: none;
+}
+
+.content-menu ul li {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	display: inline;
+	padding-right: 15px;;
+}
+
+.content-menu ul li:hover {
+	background-color: #FFFFFF;
+}
+
+.content-menu ul li a {
+	text-decoration: none;
+	color: black;
+}
+
+@media screen and (max-width:1200px) {
+	#content {
+		font-family: 'Times New Roman', Times, serif;
+		margin: auto;
+		width: 80%;
+	}
+	.box, .title-box, .title-content-v2 {
+		padding: 20px;
+		border: 1px solid #E0E0E0;
+		width: 100%;
+		float: left;
+	}
+	.box-ad {
+		padding-left: 30%;
+		padding-right: 20%;;
+	}
+	.box-ad img {
+		width: 350px;
+		height: 300px;;
+	}
+}
+
+@media screen and (max-width:720px) {
+	.box-ad {
+		padding-left: 10%;
+		padding-right: 10%;;
+	}
+	.title-content-v2 #topic-right {
+		width: 50%;;
+		float: left;
+		padding-left: 20px;
+	}
+}
+
+.table_coupon td {
+	padding: 20px;
+}
+</style>
+<script>
+	var messageSuccess = '[[${messageSuccess}]]';
+	var messageError = '[[${meesageError}]]';
+	console.log("start");
+	console.log("success:" + messageSuccess)
+	console.log("ok error:" + messageError)
+	function myMessage() {
+		if (messageSuccess != 'null' && messageSuccess.length >= 1) {
+			dialogSuccess(messageSuccess);
+		}
+		if (messageError != 'null' && messageError.length >= 1) {
+			dialogError(messageError);
+		}
+	}
+	setTimeout(myMessage, 100);
+	
+	$(document).ready(function() {
+		
+	});
+</script>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/header :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigation :: #navigation"></div>
+	</div>
+	<div id="content">
+		<div class="inner" style="margin-top: 20px;">
+			<div class="main_container">
+				<div class="main-col" id="main_container">
+					<div id="shortlist_wrapper"></div>
+					<div class="news-box base-box nb-style3 nb-style4 object-title">
+						<header class="nb-header">
+							<h1 class="nb-title">
+								<span>ĐẶT HÀNG COMBO</span>
+							</h1>
+						</header>
+					</div>
+					<div class="base-box">
+						<div class="entry-content h2center">
+							<h2>CÁC KHÓA HỌC TRONG COMBO</h2>
+							<p style="text-align: center">
+								<span class="mom_button_wrap"><a
+									class="action button mom_button red_bt"
+									th:href="@{'/comboCourse/createCombo?id='+${idCategory}}"
+									title="tao combo">TÔI MUỐN TẠO COMBO KHÁC</a></span>
+							</p>
+							<div id="course_lists" style="margin-top: 0px">
+								<div class="table-responsive">
+									<div class="table-responsive">
+										<table class="table_coupon" style="margin-bottom: 0px">
+											<tbody class="aff-price-wrapper">
+												<div th:each=" course : ${listCourse}">
+													<tr>
+														<td style="text-align: center"><img
+															style="margin-bottom: 0px; max-width: 80px"
+															th:src="${course.image}" th:alt="${course.title}"></td>
+														<td><a href="#"
+															alt="Khóa học Photoshop cơ bản (HP 2.1)"
+															title="photoshop co ban 137 html"> <span
+																style="color: blue" th:text="${course.title}">
+																	Khóa học Photoshop cơ bản (HP 2.1) </span>
+														</a></td>
+														<td><strong th:text="${course.price}">299,000</strong>
+															đ</td>
+													</tr>
+												</div>
+												<tr>
+													<td style="text-align: RIGHT" colspan="2"><strong>TỔNG
+															TIỀN</strong></td>
+													<td><strong>598,000đ</strong></td>
+												</tr>
+												<tr>
+													<td style="text-align: RIGHT" colspan="2"><strong>GIÁ
+															SAU KHI GIẢM</strong></td>
+													<td><strong style="color: red">346,000đ</strong></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="base-box"
+						style="background: #34495e; max-width: 600px; margin: 20px auto">
+						<h2
+							style="text-align: center; margin-bottom: 5px; margin-top: 20px; color: #fff">ĐĂNG
+							KÝ / THANH TOÁN COMBO</h2>
+						<p style="color: #fff; text-align: center">###########################</p>
+						<div class="box-grayS" id="form_register"
+							style="margin-bottom: 0px;">
+							<div role="form" class="wpcf7" id="wpcf7-f153-p150-o1"
+								lang="en-US" dir="ltr">
+								<div class="screen-reader-response"></div>
+								<form 
+									th:object="${registration}"
+									th:action="@{'/registration/saveRegistration?idComboCourse='+${idComboCourse}}"
+									action="#" method="post">
+									<p>
+										<label style="font-weight: bold; color: #fff">Tên của
+											bạn <span id="errorName" style="color: red">*</span>
+										</label><br /> <input type="text" required="true" id="name" value=""
+											size="40" placeholder="Tên của bạn (required)"
+											th:field="*{nameCustomer}" /> <br />
+									</p>
+
+									<p>
+										<label style="font-weight: bold; color: #fff">Điện
+											thoại của bạn <span style="color: red" id="errorPhone">*</span>
+										</label> <br /> <input type="text" required="true" id="phone"
+											value="" size="40" th:field="*{phone}"
+											placeholder="Điện thoại của bạn (required)"> <br />
+									</p>
+									<p>
+										<label style="font-weight: bold; color: #fff">Email
+											của bạn <span style="color: red" id="errorEmail">*</span>
+										</label> <br /> <input type="email" required="true" id="email"
+											th:field="*{email}" value="" size="40"
+											placeholder="Email của bạn (required)" /> <br />
+									</p>
+
+									<p>
+										<label style="font-weight: bold; color: #fff">Link
+											facebook<span style="color: red;" id="errorFacebook">
+										</label> <br /> <input type="text" id="facebook" value=""
+											th:field="*{urlFacebook}" size="40"
+											placeholder="Facebook của bạn" /> <br />
+									</p>
+
+									<label style="font-weight: bold; color: #fff">Hình thức
+										thanh toán </label>
+									<div id=""
+										style="background: #fff; padding: 20px; margin: 15px 0px 20px 0px;">
+										<select th:field="*{typePay}">
+											<option th:value="BANK">THANH TOÁN QUA NGÂN HÀNG</option>
+											<option th:value="POSTOFFICE">THANH TOÁN QUA BƯU
+												ĐIỆN</option>
+											<option th:value="PAYPAL">THANH TOÁN QUA PAYPAL</option>
+											<option th:value="MOMO">THANH TOÁN QUA MOMO</option>
+										</select>
+									</div>
+										<input type="submit" style="background: #2ecc71"
+											value="GỬI THÔNG TIN">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

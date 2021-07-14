@@ -1,0 +1,157 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div id="footer_wrapper">
+		<footer id="footer" style="width: 100%">
+			<div class="inner">
+				<div class="one_fourth">
+					<div class="widget momizat-posts">
+						<div class="widget-head">
+							<h3 class="widget-title">
+								<span style="font-weight: normal">  Liên hệ </span>
+							</h3>
+						</div>
+						<div class="mom-posts-widget">
+							<ul>
+								<li><a href="#" title="giới thiệu">Giới
+										thiệu</a></li>
+								<li><a href="#"
+									title="Chính sách bảo mật">Chính sách</a></li>
+								<li><a href="#"
+									title="Điều khoản sử dụng">Điều khoản</a></li>
+								<li><a th:href="@{'/contact/create'}" title="liên hệ">Liên hệ</a></li>
+								<li><a href="#"
+									title="Guest Post">Guest Post</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="one_fourth">
+					<div class="widget widget_categories">
+						<div class="widget-head">
+							<h3 class="widget-title">
+								<span style="font-weight: normal">Mã giảm giá</span>
+							</h3>
+						</div>
+						<div class="mom-posts-widget">
+							<ul>
+								<li><a href="#"
+									title="Mã giảm giá TinoHost">TinoHost</a></li>
+								<li><a href="#"
+									title="Mã giảm giá Azdigi">Azdigi</a></li>
+								<li><a href="#"
+									title="mã giảm giá Vultr">Vultr</a></li>
+								<li><a href="#"
+									title="mã giảm giá hawkhost">Hawkhost</a></li>
+								<li><a href="#"
+									title="mã giảm giá stablehost">Stablehost</a></li>
+
+							</ul>
+						</div>
+
+					</div>
+				</div>
+				<div class="one_fourth">
+					<div class="widget momizat-posts">
+						<div class="widget-head">
+							<h3 class="widget-title">
+								<span style="font-weight: normal">Khóa học</span>
+							</h3>
+						</div>
+						<div class="mom-posts-widget">
+							<ul>
+								<li><a
+									href="#"
+									target="_blank" title="khoa hoc javascript tu dau 8 html"><span
+										style="color: pink">Javascript</span></a></li>
+								<li><a
+									href="#"
+									target="_blank"
+									title="combo khoa hoc lap trinh frontend 67 html"> <span
+										style="color: pink">Front-end</span></a></li>
+								<li><a
+									href="#"
+									target="_blank"
+									title="nodejs ket hop mongodb mongoose va postgresql 13 html">
+										<span style="color: pink">NodeJS</span>
+								</a></li>
+								<li><a
+									href="#"
+									target="_blank"
+									title="react js va redux tao ung dung fullstack voi node js   react js 14 html">
+										<span style="color: pink">React JS</span>
+								</a></li>
+								<li><a
+									href="#"
+									target="_blank"
+									title="combo khoa hoc tung buoc tro thanh fullstack developer 68 html"><span
+										style="color: pink">Fullstack</span></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="one_fourth last">
+					<div class="widget momizat-posts">
+						<div class="widget-head">
+							<h3 class="widget-title">
+								<span style="font-weight: normal">Giới thiệu</span>
+							</h3>
+						</div>
+						<div class="mom-posts-widget">
+							<p>
+								Admin <strong style="color: pink">Cường</strong>, quản lý chính
+								của website.
+							</p>
+							<ul>
+								<li style="font-size: 15px">Email: thehalfheart@gmail.com</li>
+								<li style="font-size: 15px">Phone/Zalo: 0979306603</li>
+								<li style="font-size: 15px">Skype: thehalfheart</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</footer>
+		<div class="copyrights-area">
+			<div class="inner">
+				<p class="copyrights-text" style="text-align: center">
+					<a class="follow"
+						href="#"
+						title="Cho thuê phòng trọ" target="_blank">Cho thuê phòng trọ</a>
+					| <a class="follow"
+						href="#"
+						title="cho thuê nhà" target="_blank">cho thuê nhà</a> | <a
+						class="follow"
+						href="#"
+						title="XSMN" target="_blank">XSMN</a> | Khu đô thị <a
+						class="follow" href="https://aquacityvn.vn" title="Aqua City"
+						target="_blank">Aqua City</a> Novaland <br /> <br /> <span>
+						@2020 - Freetuts.net. All Right Reserved </span> <br /> Theme <strong>GoodNews</strong>,
+					nền tảng <strong>Codeigniter</strong>, VPS mua tại <a
+						href="#" target="_blank"
+						rel="noopener noreferrer nofollow external" title="tinohost">Tinohost</a>
+					<br /> <a
+						href="#"
+						title="DMCA.com Protection Status" class="dmca-badge"
+						target="_blank" rel="nofollow"> <img style="margin-top: 10px"
+						src="https://freetuts.net/public/dmca-protected.png"
+						alt="DMCA.com Protection Status">
+					</a>
+
+				</p>
+			</div>
+		</div>
+		<!-- show form report -->
+		<div th:replace="./fragments/report :: #tool"></div>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/lib.js?v=424'></script>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/ads.js?v=424'></script>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/all.js?v=424'></script>
+	</div>
+</body>

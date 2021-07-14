@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html class="no-js" lang="vi-VN" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Học online miễn phí - Freetuts - Freetuts</title>
+<link rel="shortcut icon" type="image/x-icon"
+	href="https://freetuts.net/public/logo/icon.png?r=1" />
+	<!--===============================================================================================-->
+<link rel='stylesheet' id='plugins-css'
+	href='https://freetuts.net/public/theme/css/style.css?v=424'
+	type='text/css' media='all' />
+	<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/css/khoahoc.css}"/>
+	<!--===============================================================================================-->
+<link th:replace="fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: link" />
+<!--===============================================================================================-->
+<script type="text/javascript"
+	src="https://goodads.online/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	var idCourse = '[[${course.idCourse}]]';
+	$.ajax({
+		type : 'GET',
+		contentType: "application/json; charset=utf-8",
+		url : 'http://localhost:8762/api/v1/registration/listByIdCourse?idCourse='+idCourse,
+		success : function(e) {
+			var list = e.data;
+			var table = document.getElementById("listStudent");
+			if (list.length == 0)
+			console.log( list.length >= 11 ? 10 : list.length)
+			for (var i = 0; i < list.length >= 11 ? 10 : list.length; i++) {
+				var row = table.insertRow(0);
+				var cell1 = row.insertCell(0);
+				var cell2 = row.insertCell(1);
+				cell1.innerHTML = list[i].nameCustomer;
+				cell2.innerHTML = list[i].email.replace(/^[a-zA-Z0-9_.]{4}/, "****");
+			}
+		},
+		error : function(e) {
+			var listErrorMessages = e.responseJSON.listErrorMessages;
+			dialogError(listErrorMessages[0].message);
+		}
+	});
+	
+	$(document).ready(function() {
+		$("#formData").submit(function() {
+			var name = $("#name").val();
+			var phone = $("#phone").val();
+			var email = $("#email").val();
+			var facebook = $("#facebook").val();
+			var statusResult = true;
+			if (name == null || name.length <= 0) {
+				$("#errorName").text("vui lòng nhập name");
+				statusResult = false;
+			} else {
+				$("#errorName").text("");
+			}
+
+			if (phone == null || phone.length <= 0) {
+				$("#errorPhone").text("vui lòng nhập số điện thoại");
+				statusResult = false;
+			} else {
+				$("#errorContent").text("");
+			}
+
+			if (email == null || email.length <= 0) {
+				$("#errorEmail").text("vui lòng nhập mail");
+				statusResult = false;
+			} else {
+				$("#errorEmail").text("");
+			}
+
+			if (facebook == null || facebook.length <= 0) {
+				$("#errorFacebook").text("vui lòng link facebook");
+				statusResult = false;
+			} else {
+				$("#errorFacebook").text("");
+			}
+
+			return statusResult;
+		});
+	});
+</script>
+<style>
+
+	#listStudent td{
+		padding:10px;;
+	}
+</style>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="#">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="fragments/header :: #header-wrapper"></div>
+		<div th:replace="fragments/navigation :: #navigation"></div>
+		<div class="boxed-content-wrapper clearfix">
+			<div class="inner" id="adheader" style="margin-bottom: 20px"></div>
+			<div class="inner ">
+				<nav class="second_navigation" style="height: 35px;">
+					<div>
+						<ul>
+							<li th:each="postSub : ${listSubCategory}"><a
+								style="text-decoration: none;"
+								th:href="@{'/post/detail?id='+${postSub.idPost}}"
+								th:text="${postSub.name}">Phỏng vấn</a></li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+			<div class="inner">
+				<div class=""
+					style="line-height: 30px; margin-bottom: 10px; font-size: 15px">
+					<div itemscope itemtype="#">
+						<span itemprop="itemListElement" itemscope
+							itemtype="https://schema.org/ListItem"> <a itemprop="item"
+							th:href="${'/demo/'}" title="Trang chủ"> <span
+								itemprop="name">Home</span>
+								<meta itemprop="position" content="1" />
+						</a>
+						</span> > <span itemprop="itemListElement" itemscope itemtype="#">
+							<a itemprop="item"
+							th:href="${'/demo/category/detail?id='+idCategory}"
+							title="Khóa học"> <span itemprop="name"
+								th:text="${nameCategory}">Khóa học</span>
+								<meta itemprop="position" content="2" />
+						</a>
+						</span> > <span itemprop="itemListElement" itemscope itemtype="#">
+							<a itemprop="item" th:href="@{'/post/detail?id='+${idPost}}"
+							title="Khóa học lập trình"> <span itemprop="name"
+								th:text="${namePost}">Khóa học lập trình</span>
+								<meta itemprop="position" content="3" />
+						</a>
+						</span> > <span itemprop="name" th:text="${nameCourse}">Combo 2
+							khóa học NodeJS và ReactJS + Redux</span>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div class="inner" style="margin-top: 20px;">
+				<div class="abc2side">
+					<div id="abcleft" style="overflow: hidden">
+						<div id="abcleft-unit"></div>
+					</div>
+					<div id="abcright" style="overflow: hidden">
+						<div id="abcright-unit"></div>
+					</div>
+				</div>
+				<div class="main_container">
+					<div class="main-col" id="main_container">
+
+						<div id="shortlist_wrapper">
+							<div id="shortlist">
+								<select class="form-control"
+									style="background: #912f2f; color: #fff">
+
+								</select>
+							</div>
+						</div>
+						<div class="base-box " itemtype="http://schema.org/Article">
+							<h1 id="main_title" itemprop="headline" th:text="${course.title}">Combo
+								2 khóa học NodeJS và ReactJS + Redux</h1>
+							<div class="mom-post-meta single-post-meta">
+								<span class="author vcard">Đăng bởi: <span class="fn"
+									th:text="${course.userName}"> Administrator </span> <span>
+										- Vào ngày: <time itemprop="datePublished"
+											th:text="${course.createdAt}" class="updated">18-06-2018</time>
+								</span> <span> </span>
+							</div>
+							<span id="element_action" data-id="71"
+								data-uri="https://freetuts.net/ajax/view/learn_post"></span>
+							<div class="entry-content ">
+								<div style="float: right;">
+									<img th:src="${course.image}"
+										style="max-width: 250px; padding-left: 20px"
+										title="Combo 2 khóa học NodeJS và ReactJS + Redux"
+										alt="node react jpeg" />
+								</div>
+								<p th:href="${course.content}">Đây là khóa học "NodeJS và
+									ReactJS", bạn sẽ được học online trên website fedu.vn, thuộc
+									chuyên mục khóa học lập trình.</p>
+								<p>Bạn có thể tham khảo đề cương khóa học ở phần nội dung
+									khóa học, hoặc truy cập vào link gốc mà mình đã cung cấp dưới
+									đây.</p>
+
+								<h2 style="margin-bottom: 10px">Giới thiệu</h2>
+								<div class="table-responsive">
+									<table border="1" cellpadding="1" cellspacing="1"
+										style="width: 100%;">
+										<tbody>
+
+											<tr>
+												<td style="padding: 10px;">Khóa học</td>
+												<td th:text="${course.title}">NodeJS và ReactJS</td>
+											</tr>
+											<tr>
+												<td style="padding: 10px;">Hình thức học</td>
+												<td>
+													<div th:if="${course.typeLearn} == true">online</div>
+													<div th:if="${course.typeLearn} == false">offline</div>
+												</td>
+											</tr>
+
+											<tr>
+												<td style="padding: 10px;">Giá gốc</td>
+												<td><strong style="text-decoration: line-through"
+													th:text="${#strings.replace(#numbers.formatCurrency(course.price), '.00', '')}">499,000đ</strong>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<div class="base-box mom_box_sc mom_callout"
+									style="background-color: #d7edf5; border-color: #bddde9;">
+									<h3 style="margin-top: 0px;">Đăng ký ngay hôm nay để được
+										giảm giá</h3>
+									<h4>
+										<span style="color: #1c6f8e;">Cơ hội mua khóa học này
+											chỉ với <strong style="color: red"
+											th:text="${#strings.replace(#numbers.formatCurrency(course.price), '.00', '')}">195,300đ</strong>
+											khi đăng ký tại freetuts.net
+										</span>
+									</h4>
+									<div class="callout_content">
+
+										<p>
+											Freetuts.net là đại lý cung cấp khóa học online và offline
+											với giá rẻ nhất, giảm lên đến <strong>0%</strong> cho khóa
+											học này, nhanh tay đăng ký nhé bạn.
+										</p>
+									</div>
+									<div class="callout_button cobtr" style="text-align: center;">
+										<span class="mom_button_ob ob_blue_bt "
+											style="-webkit-border-radius: 35px; border-radius: 35px;">
+											<a
+											class="scroll_to_form button mom_button blue_bt big_bt shiny_bt "
+											href="#base-box"
+											style="text-decoration: none;; font-style: normal; -webkit-border-radius: 30px; border-radius: 30px;"
+											data-bg="" data-hoverbg="" data-text="" data-texthover=""
+											title=" ">ĐĂNG KÝ NGAY</a>
+										</span>
+									</div>
+								</div>
+
+								<h2>Học viên đã mua khóa học này</h2>
+								<table id="listStudent">
+									<tr>
+										<td>...</td>
+										<td><a th:href="@{'/registration/listCustomerBuyCourse?id='+${course.idCourse}}" rel="nofollow" target="_blank" title="">Xem thêm</a></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+
+						<div class="base-box" id="base-box"
+							style="background: #34495e; margin: 20px auto">
+							<h2
+								style="text-align: center; margin-bottom: 5px; margin-top: 20px; color: #fff">ĐĂNG
+								KÝ KHÓA HỌC</h2>
+							<p style="color: #fff; text-align: center">###########################</p>
+							<div class="box-grayS" id="form_register"
+								style="margin-bottom: 0px;">
+								<div role="form" class="wpcf7" id="wpcf7-f153-p150-o1"
+									lang="en-US" dir="ltr">
+									<div class="screen-reader-response"></div>
+									<form id="formData" accept-charset="utf-8"
+										th:object="${registration}"
+										th:action="@{~/demo/registration/saveRegistration?id=}+${course.idCourse}" action="#"
+										method="post">
+										<div style="display: none;">
+											<input type="hidden" name="ci_csrf_token" value="" /> <input
+												type="hidden" id="add_course" name="add_course"
+												th:field="*{listComboCourse[__${0}__]}" 
+												th:value="*{listComboCourse[__${0}__]}" />
+										</div>
+										<p>
+											<label style="font-weight: bold; color: #fff">Tên của
+												bạn 
+												<span id="errorName" style="color: red">*</span>
+											</label><br /> <input type="text" required="true" id="name" value=""
+												size="40" placeholder="Tên của bạn (required)"
+												th:field="*{nameCustomer}" /> <br />
+										</p>
+
+										<p>
+											<label style="font-weight: bold; color: #fff">Điện
+												thoại của bạn <span style="color: red" id="errorPhone">*</span>
+											</label> <br /> <input type="text" required="true" id="phone"
+												value="" size="40" th:field="*{phone}"
+												placeholder="Điện thoại của bạn (required)"> <br />
+										</p>
+										<p>
+											<label style="font-weight: bold; color: #fff">Email
+												của bạn <span style="color: red" id="errorEmail">*</span>
+											</label> <br /> <input type="email" required="true" id="email"
+												th:field="*{email}" value="" size="40"
+												placeholder="Email của bạn (required)" /> <br />
+										</p>
+
+										<p>
+											<label style="font-weight: bold; color: #fff">Link
+												facebook<span style="color: red;" id="errorFacebook">
+											</label> <br /> <input type="text" id="facebook" value=""
+												th:field="*{urlFacebook}" size="40"
+												placeholder="Facebook của bạn" /> <br />
+										</p>
+
+										<label style="font-weight: bold; color: #fff">Hình
+											thức thanh toán </label>
+										<div id=""
+											style="background: #fff; padding: 20px; margin: 15px 0px 20px 0px;">
+												 <select th:field="*{typePay}">
+													  <option th:value="BANK">THANH TOÁN QUA NGÂN HÀNG</option>
+													  <option th:value="POSTOFFICE">THANH TOÁN QUA BƯU ĐIỆN</option>
+													  <option th:value="PAYPAL">THANH TOÁN QUA PAYPAL</option>
+													  <option th:value="MOMO">THANH TOÁN QUA MOMO</option>
+												</select>
+										</div>
+										<p style="text-align: center">
+											<input type="submit" style="background: #2ecc71"
+												value="GỬI THÔNG TIN" id="send_message">
+										</p>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 10px; margin-bottom: 40px"></div>
+						<div id="course_lists"
+							style="margin-top: 0px; margin-bottom: 20px"></div>
+						<div id="course_lists"
+							style="margin-top: 0px; margin-bottom: 20px">
+							<div class="table-responsive">
+								<table class="table_coupon" style="margin-bottom: 0px;">
+									<thead>
+										<tr>
+											<th width="100%" colspan="2" th:text="${namePost}"
+												style="background: #2f6e91; font-size: 15px; color: #fff; text-transform: uppercase; padding: 10px;">Khóa
+												học lập trình</th>
+										</tr>
+									</thead>
+									<tbody class="aff-price-wrapper"
+										th:if="${listCourse == null || listCourse.size() <= 0}">
+										<tr>
+											<td colspan="2">Không có khóa học nào</td>
+										</tr>
+									</tbody>
+									<tbody class="aff-price-wrapper"
+										th:if="${listCourse != null && listCourse.size() >= 1}"
+										th:each="course : ${listCourse}">
+										<tr>
+											<td style="text-align: center"><a
+												th:href="${'/course/detail?id='+course.idCourse}"
+												th:title="${course.title}"> <img
+													style="max-width: 75px; margin: 10px 5px;"
+													th:src="${course.image}" alt="${course.title}">
+											</a></td>
+											<td style="padding: 10px;"><a
+												style="text-decoration: none; color: black;"
+												th:href="${'/demo/course/detail?id='+course.idCourse}"
+												th:title="${course.title}">
+													<h5 class="main-title" style="font-size: 17px !important"
+														th:text="${course.title}"></h5>
+													<p class="desc">
+														Giá: <span class="price-red"
+															th:text="${#strings.replace(#numbers.formatCurrency(course.price), '.00', '')}">192,000</span>
+														đ
+													</p>
+											</a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div th:replace="fragments/footer :: #footer_wrapper"></div>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/lib.js?v=424'></script>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/ads.js?v=424'></script>
+		<script type='text/javascript'
+			src='https://freetuts.net/public/theme/js/all.js?v=424'></script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--===============================================================================================-->
+<title>Quản lý bài đăng</title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/swal.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/pagination.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/paginationRequest.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toggle.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/toggle.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/list.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/ranger-slider.css}">
+<!--============================================receive message from attribute=================================================-->
+<script th:src="@{/static/js/message.js}"></script>
+
+<script>
+	var domainFronEnd = 'http://localhost:8080';
+	var domain = 'http://localhost:8762';
+	var token = '[[${session.token}]]';
+	$(document).ready(function() {
+		//receive message then show dialog
+		var messageSuccess = '[[${messageSuccess}]]';
+		var messageError = '[[${messageError}]]';
+		receiveMessageFromControllerAndShowDialog(messageSuccess, messageError);
+		
+		var getUrlRequest = '[[${getUrlRequest}]]';
+		//this function to excute pagination and return by tag #page
+		if(getUrlRequest != null){
+			excuteListPaginationWithRequest('[[${postPage.totalPages}]]', '[[${pageChoose}]]', "/demo/course/list?page=","&urlRequest="+getUrlRequest);
+		}else{
+			excuteListPagination('[[${postPage.totalPages}]]', '[[${pageChoose}]]', "/demo/course/list?page=");
+		}
+		
+		$('.toggle-btn').click(function() {
+			var selected = $(this).attr("id");
+			var checked = $(this).hasClass('active');
+			//get token
+			toggleClick($(this),checked, token, domain+'/api/v1/course/update?id='+selected);
+		});
+		
+		let inputLeft = document.getElementById("input-left");
+		let inputRight = document.getElementById("input-right");
+		let range = document.querySelector(".slider > .range");
+		let priceFrom = document.querySelector(".price-from");
+		let priceTo = document.querySelector(".price-to");
+
+		function setLeftValue() {
+		  let _this = inputLeft,
+		    min = parseInt(_this.min),
+		    max = parseInt(_this.max);
+
+		  _this.value = Math.min(
+		    parseInt(_this.value),
+		    parseInt(inputRight.value) - 50
+		  );
+		  priceFrom.textContent = `from :${_this.value * 1000}`;
+
+		  let percent = ((_this.value - min) / (max - min)) * 100;
+
+		  range.style.left = percent + "%";
+		}
+
+		setLeftValue();
+
+		function setRightValue() {
+		  let _this = inputRight,
+		    min = parseInt(_this.min),
+		    max = parseInt(_this.max);
+
+		  _this.value = Math.max(parseInt(_this.value), parseInt(inputLeft.value) + 50);
+		  priceTo.textContent = `to: ${_this.value * 1000}`;
+
+		  let percent = ((_this.value - min) / (max - min)) * 100;
+
+		  range.style.right = 100 - percent + "%";
+		}
+
+		setRightValue();
+
+		inputLeft.addEventListener("input", setLeftValue);
+		inputRight.addEventListener("input", setRightValue);
+
+		inputLeft.addEventListener("mouseover", (e) => {
+		  inputLeft.classList.add("hover");
+		});
+		inputLeft.addEventListener("mouseout", (e) => {
+		  inputLeft.classList.remove("hover");
+		});
+		inputLeft.addEventListener("mousedown", (e) => {
+		  inputLeft.classList.add("active");
+		});
+		inputLeft.addEventListener("mouseup", (e) => {
+		  inputLeft.classList.remove("active");
+		});
+		inputLeft.addEventListener("touchstart", (e) => {
+		  inputLeft.classList.add("active");
+		});
+		inputLeft.addEventListener("touchend", (e) => {
+		  inputLeft.classList.remove("active");
+		});
+
+		inputRight.addEventListener("mouseover", (e) => {
+		  inputRight.classList.add("hover");
+		});
+		inputRight.addEventListener("mouseout", (e) => {
+		  inputRight.classList.remove("hover");
+		});
+		inputRight.addEventListener("mousedown", (e) => {
+		  inputRight.classList.add("active");
+		});
+		inputRight.addEventListener("mouseup", (e) => {
+		  inputRight.classList.remove("active");
+		});
+		inputRight.addEventListener("touchstart", (e) => {
+		  inputRight.classList.add("active");
+		});
+		inputRight.addEventListener("touchend", (e) => {
+		  inputRight.classList.remove("active");
+		});
+		
+		$("#btnSearch").click(function() {
+			var urlRequest = domainFronEnd+"/demo/course/list?page=0";
+			
+			var paramRequest = "";
+			var nameTitle = $("#nameTitle").val();
+			var typeActiveSearch = $("#typeActiveSearch").val();
+			var userNameSearch = $("#userNameSearch").val();
+			var typeLearnSearch = $("#typeLearnSearch").val();
+			var priceFromSearch = $("#input-left").val()*1000;
+			var priceToSearch = $("#input-right").val()*1000;
+			var checkDolar = false;
+			
+			if(nameTitle != null && nameTitle.length >= 3){
+				paramRequest += "title=" + nameTitle.replace(" ","-");
+				checkDolar = true;
+			}
+			
+			if(typeActiveSearch != 'NONE'){
+				if(checkDolar == true){
+					paramRequest += "$status="+typeActiveSearch;
+				}else{
+					paramRequest += "status="+typeActiveSearch;
+					checkDolar = true;
+				}
+			}
+			
+			//chua xu ly user name
+			
+			if(typeLearnSearch != 'NONE'){
+				if(checkDolar == true){
+					paramRequest += "$typeLearn="+typeLearnSearch;
+				}else{
+					paramRequest += "typeLearn="+typeLearnSearch;
+					checkDolar = true;
+				}
+			}
+			
+			
+			if(checkDolar == true){
+				paramRequest += "$price="+priceFromSearch;
+				paramRequest += "$price="+priceToSearch;
+				
+			}else{
+				paramRequest += "price="+priceFromSearch;
+				paramRequest += "$price="+priceToSearch;
+				checkDolar = true;
+			}
+			
+			if(paramRequest != null && paramRequest.length>=1){
+				urlRequest = urlRequest + "&urlRequest="+paramRequest;
+			}else{
+			
+			}
+			 window.location.href =urlRequest;
+			return false;
+		});
+
+	});
+	//excute delete by swal
+	function btnXoa(data){
+		alert('chưa phát triển');
+		//excuteSwalDelete(token,domain+'/api/v1/course/delete?id='+data,'Xóa mặt hàng');
+	}
+	
+</script>
+<style>
+#formSearch {
+	width: 900px;
+	margin: auto;
+	border: 1px solid white;
+}
+
+#main {
+	width: 40%;
+	height: 50vh;
+	text-align: center;
+	margin:auto;
+}
+
+
+#formSearch table td {
+    word-wrap: break-word;         /* All browsers since IE 5.5+ */
+    overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+}
+
+#formSearch{
+	margin-left:20px;
+	 display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 10px;
+  padding: 10px;
+}
+#formSearch button, #formSearch a,#formSearch input{
+	width:100%;	
+}
+.row{
+	padding-right:24px;
+  text-align: center;
+}
+#myModal p{
+	margin-top:20px;
+}
+</style>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/headerAdmin :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigationAdmin :: ChooseNavigation(choose='manageCourse')"></div>
+	</div>
+	<div id="main">
+		<div class="fof">
+			<h2>Quản lý khóa học</h2>
+			<div id="formSearch">
+				<div class="row">
+					<input type="submit" value="Bộ lọc" id="" 
+							class="form-control" 
+									data-toggle="modal" data-target="#myModal" 
+							/>
+				</div>
+				<div class="row">
+					<a th:href="@{/course/create}" class="btn btn-primary"
+						style="margin-bottom: 20px;" data-target="#myModal">Thêm Khóa Học</a>
+						</div>
+				<div class="row">
+					<a class="btn btn-danger form-control" th:href="@{'/course/list'}">Reset</a>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="myModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h4 class="modal-title">Bộ lọc</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<!-- Modal body -->
+						<div class="modal-body">
+							<p>Tìm theo tên khóa học</p>
+							<input id="nameTitle"  type="text"
+								class="form-control" placeholder="Nhập tên khóa học cần tìm"> 
+							<p>tìm theo Tình trạng</p>
+							<br> <select id="typeActiveSearch" class="form-control">
+								<option value="NONE">Tất cả</option>
+								<option value="True">Kích hoạt</option>
+								<option value="False">Chưa kích hoạt</option>
+							</select>
+							<p>tìm theo người đăng</p>
+							<input id="userNameSearch"  type="text"
+								class="form-control" placeholder="Nhập tên người đăng cần tìm"> 
+							<p>lọc theo hình thức học</p>
+							<br> <select id="typeLearnSearch" class="form-control">
+								<option value="NONE">Tất cả</option>
+								<option value="True">Online</option>
+								<option value="False">Offline</option>
+							</select>
+							<p>Tìm theo giá</p>
+							<div class="wrapper">
+							  <div class="multi-range-slider">
+							    <input type="range" id="input-left" min="0" step="50" max="5000" value="0">
+							    <input type="range" id="input-right" min="0" step="50" max="5000" value="4000">
+							    <div class="slider">
+							      <div class="track"></div>
+							      <div class="range"></div>
+							    </div>
+							  </div>
+							  <div class="price__wrapper">
+							    <span class="price-from" id="priceFromSearch"></span>
+							    <span class="price-to" id="priceToSearch"></span>
+							  </div>
+							</div>
+						</div>
+						<!-- Modal footer -->
+						<div class="modal-footer">
+							<a href="#" id="btnSearch" class="btn btn-success">Xác nhận</a>
+							<a href="#" id="btnXoaRong" class="btn btn-primary">Xóa rỗng</a>
+							<a href="#" class="btn btn-danger" data-dismiss="modal">Thoát</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<table class="table">
+				<thead class="thead-dark">
+					<tr>
+						<th>Tên khóa học</th>
+						<th>Status</th>
+						<th>Ngày tạo</th>
+						<th>Người đăng</th>
+						<th>Hình thức học</th>
+						<th>Giá</th>
+						<th>Chức năng</th>
+					</tr>
+				</thead>
+				<tbody th:each=" course : ${postPage.content}">
+					<tr>
+						<td th:utext="${course.title}">John</td>
+						<td class="text-center ">
+							<div th:if="${course.status == true}" th:id="|${course.idCourse}|"
+								class="toggle-btn active">
+								<div class="inner-circle  "></div>
+							</div>
+							<div th:if="${course.status == false}" th:id="|${course.idCourse}|"
+								class="toggle-btn">
+								<div class="inner-circle  "></div>
+							</div>
+						</td>
+						<td th:utext="${course.createdAt}"></td>
+						<td th:utext="${course.userName}"></td>
+						<td>
+							<div th:if="${course.typeLearn} == false">
+								offline
+							</div>
+							<div th:if="${course.typeLearn} == true">
+								online
+							</div>
+							
+						</td>
+						<td th:utext="${course.price}"></td>
+						<td><a th:onclick="|btnXoa('${course.idCourse}')|"
+							class="btn btn-danger" id="btnXoa">Xóa</a> <a th:href="@{'/course/find?id='+${course.idCourse}}"
+							class="btn btn-primary">Sửa</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="page"></div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

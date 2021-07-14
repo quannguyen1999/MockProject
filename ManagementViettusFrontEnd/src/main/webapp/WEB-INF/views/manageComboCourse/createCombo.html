@@ -1,0 +1,416 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+<!--===============================================================================================-->
+<title th:if="${post!=null}"
+	th:text="@{post != null ? ${post.name} : 'Không tìm thấy'}">Detail
+	category</title>
+<!--===============================================================================================-->
+<style>
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+#content {
+	font-family: 'Times New Roman', Times, serif;
+	margin: auto;
+	width: 1200px;;
+}
+
+#content-list {
+	list-style-type: none;
+	padding: 20px 0px 20px 0px;;
+}
+
+#content-list li a, .title-content-v2 a {
+	text-decoration: none;
+	color: orange;
+}
+
+#content-list li a:hover, .title-content-v2 a:hover, .title-content-v2 a:hover
+	{
+	transition: 1s;
+	color: black;
+}
+
+#content-list li {
+	display: inline;
+}
+
+#content-list li::after {
+	content: " > ";
+}
+
+#content-list li:last-child:after {
+	content: "";
+}
+
+.box, .title-box, .title-content-v2 {
+	padding: 20px;
+	border: 1px solid #E0E0E0;
+	width: 800px;
+	float: left;
+}
+
+.box-right {
+	padding-left: 40px;;
+	width: 300px;;
+	float: left;
+}
+
+.box h1 {
+	font-size: 25px;;;
+	padding-top: 20px;
+	padding-bottom: 20px;;
+}
+
+.box p, .title-content-v2 {
+	font-size: 20px;;
+}
+
+.box-ad {
+	padding: 35px 250px 35px 250px;;
+}
+
+.box-ad {
+	width: 100%;
+	height: auto;
+}
+
+.title-box {
+	width: 90%;;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 20px 0px 0px 0px;;
+	background-color: white;
+}
+
+.title-box p {
+	font-size: 20px;;;
+	color: red;
+}
+
+.title-box a {
+	color: orange;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.title-box a:hover {
+	transition: 1s;
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.title-box, .title-content {
+	overflow: auto;
+	clear: left;
+}
+
+#author {
+	color: gray;
+	font-size: 16px;
+	padding-bottom: 20px;;
+}
+
+.title-content-v2 {
+	border: 1px solid #E0E0E0;
+	background-color: #F9F9F9;
+	line-height: 25px;
+	margin-bottom: 20px;
+	margin-top: 10px;;
+}
+
+.title-content-v2 a {
+	color: black;
+}
+
+.title-content-v2 a:hover {
+	color: orange;
+}
+
+.title-content-v2 #title {
+	font-size: 25px;;;
+	width: 100%;;
+	padding-bottom: 20px;;
+}
+
+.title-content-v2 img {
+	width: 150px;
+	height: auto;
+	float: left;
+}
+
+.title-content-v2 #topic-right {
+	width: 70%;;
+	float: left;
+	padding-left: 20px;
+}
+
+.content-menu {
+	border-left: 5px solid #2F6E91;
+	width: 100%;;
+	background-color: #EDEDED;
+	padding: 8px 0px 10px 15px;;
+}
+
+.content-menu ul {
+	text-decoration: none;
+}
+
+.content-menu ul li {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	display: inline;
+	padding-right: 15px;;
+}
+
+.content-menu ul li:hover {
+	background-color: #FFFFFF;
+}
+
+.content-menu ul li a {
+	text-decoration: none;
+	color: black;
+}
+
+@media screen and (max-width:1200px) {
+	#content {
+		font-family: 'Times New Roman', Times, serif;
+		margin: auto;
+		width: 80%;
+	}
+	.box, .title-box, .title-content-v2 {
+		padding: 20px;
+		border: 1px solid #E0E0E0;
+		width: 100%;
+		float: left;
+	}
+	.box-ad {
+		padding-left: 30%;
+		padding-right: 20%;;
+	}
+	.box-ad img {
+		width: 350px;
+		height: 300px;;
+	}
+}
+
+@media screen and (max-width:720px) {
+	.box-ad {
+		padding-left: 10%;
+		padding-right: 10%;;
+	}
+	.title-content-v2 #topic-right {
+		width: 50%;;
+		float: left;
+		padding-left: 20px;
+	}
+}
+</style>
+<script>
+	var messageSuccess = '[[${messageSuccess}]]';
+	var messageError = '[[${meesageError}]]';
+	var idCategory = '[[${category.idCategory}]]'
+	console.log("start");
+	console.log("success:" + messageSuccess)
+	console.log("ok error:" + messageError)
+	function myMessage() {
+		if (messageSuccess != 'null' && messageSuccess.length >= 1) {
+			dialogSuccess(messageSuccess);
+		}
+		if (messageError != 'null' && messageError.length >= 1) {
+			dialogError(messageError);
+		}
+	}
+	setTimeout(myMessage, 100);
+
+	$(document)
+			.ready(
+					function() {
+						$("#btnCreateCombo")
+								.click(
+										function() {
+											console.log("ok")
+											var selected = [];
+											var value = [];
+											$('#listCategory input:checked')
+													.each(
+															function() {
+																selected
+																		.push($(
+																				this)
+																				.attr(
+																						'data-id'));
+																value
+																		.push($(
+																				this)
+																				.attr(
+																						'data-title'));
+															});
+											if (selected.length == 0) {
+												alert("Bạn chưa chọn khóa học nào")
+											} else {
+												$(
+														"#show-combo-selected-wrapper")
+														.css("display", "block");
+												var resultListCourse = "";
+												var idComboCourse = "";
+												var count = 0;
+												for (var i = 0; i < selected.length; i++) {
+													resultListCourse = resultListCourse
+															+ '<li><a target="_blank" href="/demo/course/detail?id='
+															+ selected[i]
+															+ '">'
+															+ value[i]
+															+ '</a></li>';
+													if (count >= 1) {
+														idComboCourse = idComboCourse
+																+ "-"
+																+ selected[i];
+													} else {
+														idComboCourse = idComboCourse
+																+ selected[i];
+														count++;
+													}
+												}
+												$("#list-combo-selected").html(
+														resultListCourse);
+												$("#btnVerify")
+														.attr(
+																'href',
+																'/demo/comboCourse/verifyCombo?id='
+																		+ idComboCourse
+																		+ "&idCategory="
+																		+ idCategory);
+											}
+										});
+					});
+</script>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/header :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigation :: #navigation"></div>
+	</div>
+	<div id="content">
+		<div class="inner "
+			th:if="${listSubCategory != null && listSubCategory.size() >= 1}">
+			<nav class="second_navigation" style="height: 35px;">
+				<div>
+					<ul>
+						<li th:each="postSub : ${listSubCategory}"><a
+							style="text-decoration: none;"
+							th:href="@{'/post/detail?id='+${postSub.idPost}}"
+							th:text="${postSub.name}">Phỏng vấn</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+		<ul id="content-list">
+			<li><a th:href="@{/}">Home</a></li>
+			<li><a th:if="${category != null}"
+				th:href="${'/demo/category/detail?id='+category.idCategory}"
+				th:text="${category.name}">Interview</a></li>
+			<li>Tạo combo</li>
+		</ul>
+		<div class="inner" style="margin-top: 20px;">
+			<div class="main_container">
+				<div class="main-col" id="main_container">
+					<div id="shortlist_wrapper"></div>
+					<div class="base-box">
+						<div class="entry-content">
+							<h1>Tự tạo combo theo ý mình</h1>
+							<p style="font-size: 16px; padding: 20px 0px 0px 0px">Nếu bạn
+								muốn tự tạo combo theo ý mình thì hãy sử dụng chức năng này, nó
+								giúp bạn tiết kiệm tiền chỉ trong 4 bước:</p>
+							<ul style="padding-left: 50px;">
+								<li><strong>Bước 1</strong>: Chọn khóa học, <strong>chọn
+										càng nhiều</strong> thì <strong>chi phí càng rẻ</strong>.</li>
+								<li><strong>Bước 2</strong>: Tạo combo</li>
+								<li><strong>Bước 3</strong>: Thanh toán</li>
+								<li><strong>Bước 4</strong>: Nhận khóa học từ Admin</li>
+							</ul>
+							<br> <br>
+							<div id="listCategory" th:each="postSub : ${listSubCategory}">
+								<div style="margin-top: 40px;" class="selectcombo">
+									<h3>
+										<span th:text="${postSub.name}">Khóa học lập trình</span>
+									</h3>
+									<div th:if="${listCourse != null && listCourse.size() >= 1}"
+										th:each="course : ${listCourse}">
+										<ul>
+											<li th:if="${postSub.idPost == course.idPost}"><input
+												th:id="@{'lisid'+${course.idCourse}}" type="checkbox"
+												th:data-title="${course.title}" name="name"
+												th:data-id="${course.idCourse}" data-href="#"> <label
+												th:for="@{'lisid'+${course.idCourse}}"
+												th:text="${course.title}">Thiết kế hiệu ứng với
+													Javascript và illustrator </label> (<a
+												th:href="@{'/course/detail?id='+${course.idCourse}}"
+												target="_blank"
+												title="Thiết kế hiệu ứng với Javascript và illustrator">Xem</a>)
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<p style="text-align: center"></p>
+							<div class="callout_button cobtr" style="text-align: center;">
+								<span class="mom_button_ob ob_blue_bt "
+									style="-webkit-border-radius: 35px; border-radius: 35px;">
+									<a
+									class="createcombo_btn button mom_button blue_bt big_bt shiny_bt"
+									id="btnCreateCombo"
+									style="font-style: normal; -webkit-border-radius: 30px; border-radius: 30px;"
+									title=" ">TẠO COMBO</a>
+								</span>
+							</div>
+							<p></p>
+							<div id="show-combo-selected-wrapper" style="display: none;">
+								<h4 style="text-align: center; margin-top: 50px;">DANH SÁCH
+									KHÓA HỌC BẠN ĐÃ CHỌN</h4>
+								<ol id="list-combo-selected" style="padding-left: 40px;">
+									<li><a href="undefined" target="_blank">Khóa học
+											Photoshop cơ bản (HP 2.1)</a></li>
+								</ol>
+								<div style="text-align: center">
+									<div class="callout_button cobtr" style="text-align: center;">
+										<a id="btnVerify" href="#"
+											class="button mom_button blue_bt big_bt shiny_bt"
+											style="font-style: normal; -webkit-border-radius: 30px; border-radius: 30px;"
+											title=" ">XÁC NHẬN</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

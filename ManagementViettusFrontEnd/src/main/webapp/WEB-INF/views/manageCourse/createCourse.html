@@ -1,0 +1,305 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Thêm khóa học</title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<script
+	src="https://cdn.ckeditor.com/ckeditor5/28.0.0/decoupled-document/ckeditor.js"></script>
+<!--===============================================================================================-->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--============================================receive message from attribute=================================================-->
+<script th:src="@{/static/js/message.js}"></script>
+<style>
+#editor {
+	border: 1px solid black;
+}
+
+* {
+	font-family: 'Times New Roman', Times, serif;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contain {
+	width: 80%;
+	margin: auto;
+}
+
+.contain table tr{
+	width: 100%;
+	line-height: 50px;;
+}
+
+.contain h1 {
+	text-align: center;
+}
+
+#toolbar-container {
+	width: 100%;;
+	margin: auto;
+}
+
+#editor {
+	height: 200px;
+}
+
+#trackingDiv {
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+#imgChoose {
+	width: 400px;
+	padding-top: 20px;
+}
+
+.box-img {
+	width: 50%;
+	margin: auto;
+}
+
+#content-menu-sub-category {
+	display: none;
+}
+
+.title {
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+}
+
+@media screen and (max-width:1100px) {
+	#toolbar-container {
+		width: 900px;
+		margin: auto;
+	}
+}
+
+@media screen and (max-width:1000px) {
+	#toolbar-container {
+		width: 800px;
+		margin: auto;
+	}
+}
+
+@media screen and (max-width:800px) {
+	#toolbar-container {
+		width: 500px;
+		margin: auto;
+	}
+}
+
+@media screen and (max-width:500px) {
+	#toolbar-container {
+		width: 50%;
+		margin: auto;
+	}
+}
+</style>
+<script>
+		$(document).ready(function(){
+			//receive message then show dialog
+			var messageSuccess = '[[${messageSuccess}]]';
+			var messageError = '[[${messageError}]]';
+			receiveMessageFromControllerAndShowDialog(messageSuccess, messageError);
+			
+            $("#img-picker").mouseout(function(){
+                var valueLink = $(this).val();
+                $("#imgChoose").attr("src",valueLink);
+            });
+
+            $("#btnXoaRong").click(function(){
+                $('#formData').trigger("reset");
+            });
+            
+            $("#formData").submit(function() {
+    			var title = $("#title").val();
+    			var content = $("#content").val();
+    			var nameCourse = $("#nameCourse").val();
+    			var price = $("#price").val();
+    			var linkCourse = $("#linkCourse").val();
+    			var imgPicker = $("#img-picker").val();
+    			
+    			var statusResult = true;
+    			if (title == null || title.length <= 0) {
+    				$("#errorTitle").text("vui lòng nhập tiêu đề");
+    				statusResult = false;
+    			} else {
+    				$("#errorTitle").text("");
+    			}
+    			
+    			if (content == null || content.length <= 0) {
+    				$("#errorContent").text("vui lòng nhập nội dung");
+    				statusResult = false;
+    			} else {
+    				$("#errorContent").text("");
+    			}
+    			
+    			if (price == null || price.length <= 0) {
+    				$("#errorPrice").text("vui lòng nhập giá");
+    				statusResult = false;
+    			} else if(price <= 0){
+    				$("#errorPrice").text("giá không hợp lệ");
+    				statusResult = false;
+    			} else {
+    				$("#errorPrice").text("");
+    			}
+    			
+    			if (linkCourse == null || linkCourse.length <= 0) {
+    				$("#errorLinkCourse").text("vui lòng nhập link khóa học");
+    				statusResult = false;
+    			} else {
+    				$("#errorLinkCourse").text("");
+    			}
+    		
+    			if (imgPicker == null || imgPicker.length <= 0) {
+    				$("#errorImage").text("vui lòng nhập hình");
+    				statusResult = false;
+    			} else {
+    				$("#errorImage").text("");
+    			}
+    			if(statusResult == true){
+    				return true;
+    			}else{
+    				return false;
+    			}
+    		});
+        });
+    </script>
+</head>
+<body>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/headerAdmin :: #header-wrapper"></div>
+		<div
+			th:replace="./fragments/navigationAdmin :: ChooseNavigation(choose='manageCourse')"></div>
+	</div>
+	<div class="contain">
+		<a th:href="@{/course/list}" class="btn btn-primary">Quay lại</a>
+		<h1>Thêm Khóa học</h1>
+		<form id="formData" accept-charset="utf-8" th:object="${course}"
+			th:action="@{saveCourse}" action="#" method="POST" name="addDisplay">
+			<table>
+				<tr class="title">
+					<td>
+						<p width="40%">
+							Tiêu đề: <span class="error" id="errorTitle">*</span>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="text" class="form-control"
+						placeholder="Nhập tiêu đề" th:field="*{title}" id="title" /></td>
+				</tr>
+				<tr class="title">
+					<td width="100%">
+						<p>
+							Nhập nội dung: <span class="error" id="errorContent">*</span>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div>
+							<textarea id="content" th:field="*{content}" style="line-height:20px;background-color: white;" rows="3">Nội dung</textarea>
+						</div> 
+					</td>
+				</tr>
+				<tr class="title">
+					<td>
+						<p>Hình thức học:</p>
+					</td>
+				</tr>
+				<tr>
+					<td><select th:field="*{typeLearn}" class="form-control"
+						id="type-learn">
+							<option value="TRUE">Online</option>
+							<option value="FALSE">Offline</option>
+					</select></td>
+				</tr>
+				<tr class="title">
+					<td>
+						<p>Giá: <span class="error" id="errorPrice">*</span></p>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="number" class="form-control"
+						placeholder="Nhập giá" th:field="*{price}" id="price" /></td>
+				</tr>
+				<tr class="title">
+					<td>
+						<p>Link khóa học:  <span class="error" id="errorLinkCourse">*</span></p>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="text" class="form-control"
+						placeholder="Nhập link khóa học" th:field="*{linkCourse}" id="linkCourse" /></td>
+				</tr>
+				<tr class="title">
+					<td>Danh sách danh mục:</td>
+				</tr>
+				<tr>
+					<td><select id="listPost" th:field="*{idPost}"
+						class="form-control">
+							<option th:each="post : ${listPostCourse}"
+								th:value="${post.idPost}" th:utext="${post.name}" />
+					</select>
+						<div th:each=" post : ${listPost}">
+							<input type="hidden"
+								th:id="${'hiddenTypePost'+post.idPost}"
+								th:value="${post.name}" />
+						</div></td>
+				</tr>
+				<tr class="title">
+					<td>
+						<p>
+							Chọn hình: <span class="error" id="errorImage">*</span>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="text" th:field="*{image}" id="img-picker"
+						class="form-control" placeholder="Chọn hình" /></td>
+				</tr>
+				<tr>
+					<td>
+						<div class="box-img">
+							<img id="imgChoose" />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: right;"><input id="btnXacNhan"
+						type="submit" value="Xác nhận" class="btn btn-success" /> <a
+						id="btnXoaRong" class="btn btn-primary">Xóa rỗng</a> <a
+						th:href="@{/course/list}" class="btn btn-danger">Hủy</a></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

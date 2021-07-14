@@ -1,0 +1,42 @@
+* {
+	margin: 0 auto;
+}
+.box {
+	width: 400px;
+	text-align: center;
+	align-items: center;
+	align-content: center;
+	border: 1px solid lightgrey;
+	height: 100%;
+	text-align: center;
+	border-radius: 5px 5px 5px 5px;
+	margin: auto;
+}
+
+.box p {
+	padding: 10px;
+}
+
+input[type="text"] {
+	margin-bottom: 15px;
+}
+
+input[type="password"] {
+	margin-bottom: 15px;
+}
+
+.login {
+	padding: 15px;
+}
+
+button {
+	height: 40px;
+}
+
+section {
+	text-align: center;
+}
+
+.error {
+	color: red;
+}

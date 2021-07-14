@@ -1,0 +1,269 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--===============================================================================================-->
+<title th:if="${category!=null}"
+	th:text="@{category != null ? ${category.name} : 'Không tìm thấy'}">Detail
+	category</title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+<script>
+	var messageSuccess = '[[${messageSuccess}]]';
+	var messageError = '[[${meesageError}]]';
+	function myMessage() {
+		if (messageSuccess != 'null' && messageSuccess.length >= 1) {
+			dialogSuccess(messageSuccess);
+		}
+		if (messageError != 'null' && messageError.length >= 1) {
+			dialogError(messageError);
+		}
+	}
+	setTimeout(myMessage, 100);
+</script>
+<style>
+</style>
+<script>
+	$(document)
+			.ready(
+					function() {
+						var checkValue = '[[${postPage}]]';
+						if (checkValue.length >= 1) {
+							var totalPage = '[[${postPage} == null ? -1 : ${postPage.totalPages}]]';
+							var pageChoose = '[[${pageChoose}]]';
+							var id = '[[${idPage}]]';
+							var limitPage = 5;
+							var url = "/demo/category/detail?id=" + id;
+							var valueHtml = '<ul  class="pagination">';
+							if (limitPage < totalPage) {
+								var startIndex = 0;
+								if (pageChoose != 0) {
+									valueHtml += '<li class="active"><a href="'
+											+ url + '&page=' + 0
+											+ '">\<<</a></li>';
+									startIndex = pageChoose - 1;
+								}
+								if (pageChoose == (totalPage - 1)) {
+									console.log(totalPage)
+									for (var i = totalPage - limitPage; i < totalPage; i++) {
+										if (pageChoose == i) {
+											valueHtml += '<li class="active"><a href='
+													+ url
+													+ '&page='
+													+ i
+													+ '">'
+													+ i + '</a></li>';
+										} else {
+											valueHtml += '<li ><a href="' + url
+													+ '&page=' + i + '">'
+													+ i + '</a></li>';
+										}
+									}
+								} else {
+									for (var i = startIndex; i < limitPage
+											+ startIndex; i++) {
+										if (pageChoose == i) {
+											valueHtml += '<li class="active"><a href="'
+													+ list
+													+ '&page='
+													+ i
+													+ '">'
+													+ i + '</a></li>';
+										} else {
+											valueHtml += '<li ><a href="' + url
+													+ '&page=' + i + '">'
+													+ i + '</a></li>';
+										}
+									}
+									totalPage--;
+									valueHtml += '<li class="active"><a href="'
+											+ url + '&page=' + totalPage
+											+ '">\>></a></li>';
+								}
+							} else if (pageChoose >= 1) {
+								for (var i = 0; i < totalPage; i++) {
+									if (pageChoose == i) {
+										valueHtml += '<li class="active"><a href="'
+												+ url
+												+ '&page='
+												+ i
+												+ '">'
+												+ i + '</a></li>';
+									} else {
+										valueHtml += '<li ><a href="' + url
+												+ '&page=' + i + '">'
+												+ i + '</a></li>';
+									}
+								}
+							} else {
+								for (var i = 0; i < totalPage; i++) {
+									if (pageChoose == i) {
+										valueHtml += '<li class="active"><a href="'+url+'&page='+i+'">'
+												+ i + '</a></li>';
+									} else {
+										valueHtml += '<li ><a href="'+url+'&page='+i+'">'
+												+ i + '</a></li>';
+									}
+								}
+							}
+							valueHtml += '</ul>';
+							$("#page").append(valueHtml);
+						}
+					});
+</script>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/header :: #header-wrapper"></div>
+		<div th:replace="./fragments/navigation :: #navigation"></div>
+	</div>
+	<div id="content" th:if="${category == null}">
+		<div id="main">
+			<div class="fof">
+				<h1>Trang không tìm thấy</h1>
+			</div>
+		</div>
+	</div>
+	<div class="inner ">
+		<nav class="second_navigation" style="height: 35px;">
+			<div>
+				<ul>
+					<li th:each="postSub : ${listSubCategory}"><a
+					style="text-decoration:none;"
+					th:href="@{'/post/detail?id='+${postSub.idPost}}"
+					th:text="${postSub.name}">Phỏng vấn</a></li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+	<div class="inner">
+		<div class=""
+			style="line-height: 30px; margin-bottom: 10px; font-size: 15px">
+			<div itemscope="" itemtype="https://schema.org/BreadcrumbList">
+
+				<span itemprop="itemListElement" itemscope=""
+					itemtype="#"> <a itemprop="item"
+					th:href="${'/demo/'}" title="Trang chủ"> <span
+						itemprop="name">Home</span>
+						<meta itemprop="position" content="1">
+				</a>
+				</span> &gt; <span itemprop="name"  th:text="${category.name}" ></span>
+
+			</div>
+		</div>
+
+	</div>
+	<div class="inner" style="margin-top: 20px;">
+		<div class="abc2side">
+			<div id="abcleft" style="overflow: hidden; height: 600px;">
+				<div id="abcleft-unit" style=""></div>
+			</div>
+			<div id="abcright" style="overflow: hidden; height: 600px;">
+				<div id="abcright-unit" style=""></div>
+			</div>
+		</div>
+		<div class="main_container">
+			<div class="main-col" id="main_container">
+				<div id="shortlist_wrapper"></div>
+				<div class="base-box" itemtype="http://schema.org/Article">
+					<h1 id="main_title" class="post-tile entry-title"
+						itemprop="headline"  th:text="${category.name}">Đánh giá khóa học online!</h1>
+					<div class="entry-content">
+						<p style="margin-bottom: 0px"  th:text="${category.content}">Bạn đang cần tìm khóa học hoặc
+							mua khóa học online với giá rẻ nhất? Vậy hãy xem những đánh giá
+							khóa học online mà freetuts giới thiệu ở đây nhé!</p>
+						<p
+							style="text-align: center; margin-top: 20px; margin-bottom: -20px">
+							<span class="mom_button_wrap"><a
+								th:href="@{'/comboCourse/createCombo?id='+${category.idCategory}}"
+								style="text-decoration:none;"
+								class="action button mom_button red_bt" title="tạo combo">Tạo
+									Combo</a></span>
+						</p>
+					</div>
+				</div>
+				<div id="course_lists" style="margin-top: 0px; margin-bottom: 20px">
+					<div class="table-responsive">
+						<div class="table-responsive" th:if="${listSubCategory != null && listSubCategory.size() >= 1}" th:each="post : ${listSubCategory}">
+							<table class="table_coupon" style="margin-bottom: 0px;">
+								<thead>
+									<tr>
+										<th width="100%" colspan="2"
+											style="background: #2f6e91; font-size: 15px; color: #fff; text-transform: uppercase; padding:10px;" th:text="${post.name}"></th>
+									</tr>
+								</thead>
+								<tbody class="aff-price-wrapper" th:if="${listCourse != null && listCourse.size() >= 1}" 
+								 th:each="course, iterator : ${listCourse}">
+									<tr th:if="${course.idPost == post.idPost}">
+										<td style="text-align: center"><a
+												th:href="${'/course/detail?id='+course.idCourse}"
+											th:title="${course.title}">
+												<img style="max-width: 75px; margin: 10px 5px;"
+												th:src="${course.image}"
+												alt="${course.title}">
+										</a></td>
+										<td style="padding:10px;"><a
+										style="text-decoration:none;color:black;"
+											th:href="${'/demo/course/detail?id='+course.idCourse}"
+											th:title="${course.title}">
+												<h5 class="main-title" style="font-size: 17px !important" th:text="${course.title}"></h5>
+												<p class="desc">
+													Giá: <span class="price-red" th:text="${#strings.replace(#numbers.formatCurrency(course.price), '.00', '')}">192,000</span> đ
+												</p>
+										</a></td>
+									</tr>
+								</tbody>
+								
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="sidebar main-sidebar" id="right_sidebar"
+			style="position: relative; height: 210px;">
+			<!--
+<div style="margin-bottom: 20px"><ins class="goodads" style="display:block" data-ad-slot="FOFZ" data-ad-format="auto" data-full-width-responsive="true"></ins>
+</div> -->
+			<div class="weather-widget blog widget weather-categories ">
+				<div class="widget-head">
+					<h3 class="widget-title">
+						<span>Mã giảm giá</span>
+					</h3>
+				</div>
+				<div class="next-days">
+					<ol>
+						<li>
+							<div class="day-summary">
+								<div class="d-decs" style="padding-left: 10px">
+									<i class="momizat-icon-star" style="color: #ffa507"></i> <a
+										class="uppercase"
+										href="#"
+										title="Mã giảm giá FEDU"># Fedu</a>
+								</div>
+							</div>
+						</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

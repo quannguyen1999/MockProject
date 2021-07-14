@@ -1,0 +1,83 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<style>
+		a{
+			text-decoration:none;
+		}
+	</style>
+</head>
+<body>
+<nav id="navigation" th:fragment="ChooseNavigation" itemtype="http://schema.org/SiteNavigationElement"
+	itemscope="itemscope" role="navigation"
+	class="dd-effect-slide navigation">
+	<div class="navigation-inner"  >
+		<div class="inner">
+			<ul id="menu-main-menu" class=" main-menu mom_visibility_desktop" >
+				<li id="menu-item-87" 
+					class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home mom_default_menu_item menu-item-iconsOnly menu-item-depth-0"><a
+					href="/demo/welcome" title="no title" style="text-decoration:none;"> <i class="fa fa-home icon_only"
+						aria-hidden="true"></i><span class="icon_only_label"></span></a></li>
+				<li  th:if="${session.typeAccount == 'ADMIN'}"
+					th:style="${choose != null && choose == 'manageAccount' ? 'background-color:white;' : ''}"
+					class="menu-item menu-item-type-custom  menu-item-has-children menu-parent-item mom_mega menu-item-depth-0">
+					<a th:href="@{/account/list}" 
+					th:style="${choose != null && choose == 'manageAccount' ? 'color:black;text-decoration:none;' : 'text-decoration:none;'}"
+					style="text-decoration:none;" title="Tutorials">Quản lý tài khoản</a> <i class="responsive-caret"></i>
+				</li>
+				<li  th:if="${session.typeAccount == 'ADMIN'} "
+				th:style="${choose != null && choose == 'manageCategory' ? 'background-color:white;' : ''}"
+					class="menu-item menu-item-type-custom  menu-item-has-children menu-parent-item mom_mega menu-item-depth-0">
+					<a th:href="@{/category/list}" 
+					th:style="${choose != null && choose == 'manageCategory' ? 'color:black;text-decoration:none;' : 'text-decoration:none;'}"
+					 title="Tutorials">Quản lý danh mục</a> <i
+					class="responsive-caret"></i>
+				</li>
+				<li
+					th:style="${choose != null && choose == 'managePost' ? 'background-color:white;' : ''}"
+					class="menu-item menu-item-type-custom  menu-item-has-children menu-parent-item mom_mega menu-item-depth-0">
+					<a th:href="@{/post/list}" 
+						th:style="${choose != null && choose == 'managePost' ? 'color:black;text-decoration:none;' : 'text-decoration:none;'}"
+					 title="Tutorials">Quản lý bài đăng</a> <i
+					class="responsive-caret"></i>
+				</li>
+				<li  th:if="${session.typeAccount == 'ADMIN'} "
+				th:style="${choose != null && choose == 'manageCourse' ? 'background-color:white;' : ''}"
+					class="menu-item menu-item-type-custom  menu-item-has-children menu-parent-item mom_mega menu-item-depth-0">
+					<a th:href="@{/course/list}" 
+					th:style="${choose != null && choose == 'manageCourse' ? 'color:black;text-decoration:none;' : 'text-decoration:none;'}"
+					 style="text-decoration:none;" 
+					 title="Tutorials" >Quản lý khóa học</a> <i
+					class="responsive-caret"></i>
+				</li>
+				<li  th:if="${session.typeAccount == 'ADMIN'} "
+				th:style="${choose != null && choose == 'manageRegistration' ? 'background-color:white;' : ''}"
+					class="menu-item menu-item-type-custom  menu-item-has-children menu-parent-item mom_mega menu-item-depth-0">
+					<a 
+					th:href="@{/registration/list}" 
+					th:style="${choose != null && choose == 'manageRegistration' ? 'color:black;text-decoration:none;' : 'text-decoration:none;'}"
+					style="text-decoration:none;" 
+					title="Tutorials" onclick="clickTagNoExists('đang phát triển')">Quản lý học viên</a> <i
+					class="responsive-caret"></i>
+				</li>
+				<li  th:if="${session.typeAccount == 'ADMIN'} "
+					th:style="${choose != null && choose == 'manageContact' ? 'background-color:white;' : ''}"
+					class="menu-item menu-item-type-custom  menu-item-has-children menu-parent-item mom_mega menu-item-depth-0">
+					<a th:href="@{/contact/list}" 
+					th:style="${choose != null && choose == 'manageContact' ? 'color:black;text-decoration:none;' : 'text-decoration:none;'}"
+					title="Tutorials" onclick="clickTagNoExists('đang phát triển')">Danh sách phản hồi</a> <i
+					class="responsive-caret"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<script>
+		function clickTagNoExists(message){
+			dialogError(message);
+		}
+	</script>
+</nav>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Học online miễn phí - Freetus</title>
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: link" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+<!--===============================================================================================-->
+<link rel='stylesheet' id='plugins-css'
+	href='https://freetuts.net/public/theme/css/style.css?v=424'
+	type='text/css' media='all' />
+
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-includes/css/dist/block-library/style.min.css?ver=5.6.4">
+
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-content/plugins/wordpress-popular-posts/assets/css/wpp.css?ver=5.3.3">
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-content/themes/searchengineland/css/searchengineland-bootstrap.css?ver=5.6.4">
+
+
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-content/themes/searchengineland/style.css?ver=5.6.4">
+
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-content/themes/searchengineland/css/oswald.css?ver=5.6.4">
+
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-content/themes/searchengineland/css/roboto.css?ver=5.6.4">
+<link rel="stylesheet"
+	href="https://searchengineland.com/figz/wp-content/plugins/cookie-notice/css/front.min.css?ver=5.6.4">
+<!--===============================================================================================-->
+<script th:src="@{/static/js/pagination.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/static/js/paginationRequest.js}"></script>
+<script>
+$(document).ready(function() {
+var getUrlRequest = '[[${getUrlRequest}]]';
+function excuteListPagination(totalPage, pageChoose, url){
+	var limitPage = 5;
+	var valueHtml = '<ul  class="paper">';
+		if(limitPage < totalPage){
+			var startIndex = 0;
+			if(pageChoose != 0){
+				valueHtml+='<li><a class="page-numbers current" href="'+url+0+'">\<<</a></li>';
+				startIndex = pageChoose - 1;
+			}
+			if(pageChoose == (totalPage-1)){
+				for(var i = totalPage-limitPage;i<totalPage;i++){
+					if(pageChoose == i){
+						valueHtml+='<li  ><a class="page-numbers current" href='+url+i+'">'+i+'</a></li>';
+					}else{
+						valueHtml+='<li ><a class="page-numbers"  href="'+url+i+'">'+i+'</a></li>';
+					}
+				}
+			}else{
+				for(var i = startIndex;i<limitPage+startIndex;i++){
+					if(pageChoose == i){
+						valueHtml+='<li  ><a class="page-numbers current" href="'+url+i+'">'+i+'</a></li>';
+					}else{
+						valueHtml+='<li ><a  class="page-numbers"  href="'+url+i+'">'+i+'</a></li>';
+					}
+				}
+				totalPage--;
+				valueHtml+='<li ><a  class="page-numbers current" href="'+url+totalPage+'">\»</a></li>';
+			}
+		}else{
+			for(var i = 0;i<totalPage;i++){
+				if(pageChoose == i){
+					valueHtml+='<li ><a class="page-numbers current"  href="'+url+i+'">'+i+'</a></li>';
+				}else{
+					valueHtml+='<li ><a  class="page-numbers"  href="'+url+i+'">'+i+'</a></li>';
+				}
+			}
+		}
+		valueHtml+='</ul>';
+		$("#page").append(valueHtml);
+}
+
+function excuteListPaginationWithRequest(totalPage, pageChoose, url, requestUrl){
+	var limitPage = 5;
+	var valueHtml = '<ul  class="pagination">';
+		if(limitPage < totalPage){
+			var startIndex = 0;
+			if(pageChoose != 0){
+				valueHtml+='<li class=""><a class="page-numbers current" href="'+url+0+requestUrl+'">\<<</a></li>';
+				startIndex = pageChoose - 1;
+			}
+			if(pageChoose == (totalPage-1)){
+				for(var i = totalPage-limitPage;i<totalPage;i++){
+					if(pageChoose == i){
+						valueHtml+='<li><a class="page-numbers current" href='+url+i+requestUrl+'">'+i+'</a></li>';
+					}else{
+						valueHtml+='<li ><a class="page-numbers" href="'+url+i+requestUrl+'">'+i+'</a></li>';
+					}
+				}
+			}else{
+				for(var i = startIndex;i<limitPage+startIndex;i++){
+					if(pageChoose == i){
+						valueHtml+='<li class=""><a class="page-numbers current" href="'+url+i+requestUrl+'">'+i+'</a></li>';
+					}else{
+						valueHtml+='<li ><a class="page-numbers" href="'+url+i+requestUrl+'">'+i+'</a></li>';
+					}
+				}
+				totalPage--;
+				valueHtml+='<li class="active"><a class="page-numbers" href="'+url+totalPage+requestUrl+'">>></a></li>';
+			}
+		}else{
+			for(var i = 0;i<totalPage;i++){
+				if(pageChoose == i){
+					valueHtml+='<li class=""><a class="page-numbers current" href="'+url+i+requestUrl+'">'+i+'</a></li>';
+				}else{
+					valueHtml+='<li ><a class="page-numbers" href="'+url+i+requestUrl+'">'+i+'</a></li>';
+				}
+			}
+		}
+		valueHtml+='</ul>';
+		$("#page").append(valueHtml);
+}
+//this function to excute pagination and return by tag #page
+if(getUrlRequest != null){
+	excuteListPaginationWithRequest('[[${postPage.totalPages}]]', '[[${pageChoose}]]', "/demo/post/search?page=","&urlRequest="+getUrlRequest);
+}else{
+	excuteListPagination('[[${postPage.totalPages}]]', '[[${pageChoose}]]', "/demo/post/search?page=");
+}
+});	
+
+</script>
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="fragments/header :: #header-wrapper"></div>
+		<div th:replace="fragments/navigation :: #navigation"></div>
+	</div>
+	<div class="boxed-content-wrapper clearfix">
+		<div id="adSpacer"></div>
+		<div class="content full-width-header col-lg-12 col-md-12 col-sm-12">
+			<div class="channel-content">
+				<div class="story-box">
+					<section class="global-content-stream">
+						<ul class="nav nav-tabs" role="tablist" id="contentTabs">
+							<li class="active"><a href="#latest" role="tab"
+								data-toggle="tab" style="text-transform: none !important"
+							>Search
+									Results For: 
+									<span th:text="${nameSearch == null ? 'All' : nameSearch}"></span></a></li>
+						</ul>
+						<div class="stream-wrapper" data-type="latest">
+							<div class="stream-loading-spinner">
+								<span></span>
+							</div>
+							<div class="tab-content">
+								<div class="tab-pane active" id="latest"  th:each=" post : ${postPage.content}">
+									
+									
+									<article
+										class="stream-article latest col-xs-12 col-sm-12 ">
+
+										<div class="article-image">
+											<a  
+												th:href="@{'/post/detail?id='+${post.idPost}}">
+												<img class="image img-responsive"
+												th:src="${post.image}" style="height:150px;"
+												alt="" />
+											</a>
+										</div>
+
+										<div class="article-text">
+											<h2 class="headline">
+												<a
+													th:href="@{'/post/detail?id='+${post.idPost}}"><span 
+													
+													th:text="${post.name}"
+													>
+													Another one… another algo update, that is; Friday&#8217;s
+													daily brief </span></a>
+											</h2>
+											
+												<p class="dek"
+												th:if="${post.content != null && post.content.length() >= 40}"
+													th:text="${#strings.substring(T(org.jsoup.Jsoup).parse(post.content).text(),0,35)+'...'}"
+											>Plus, more unskippable YouTube...</p>
+											
+												<p class="dek"
+												th:if="${post.content != null && post.content.length() < 41}"
+													th:text="${post.content}"
+											>Plus, more unskippable YouTube...</p>
+											
+											
+											
+											
+											
+											
+										</div>
+
+										<span class="author-time" style="float:right"> <span class="byline">
+												<span class="stream-byline"><a
+													href="#"
+													title="Posts by Carolyn Lyden" rel="author" th:text="${post.userName}">Carolyn
+														Lyden</a></span> <span th:utext="${post.dateCreated}">| Jul 2, 2021 at 10:00 am ET</span></span>
+										</span>
+									</article>
+									
+								</div>
+							</div>
+						</div>
+						<!-- .stream-wrapper -->
+					</section>
+					<!-- global-content-stream -->
+
+					<div class="pagination col-lg-12">
+						<ul class="pager" id="page">
+						</ul>
+					</div>
+					<!-- pagination -->
+				</div>
+				<!-- story-box -->
+			</div>
+			<!-- channel-content -->
+
+
+		</div>
+		<div th:replace="fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>

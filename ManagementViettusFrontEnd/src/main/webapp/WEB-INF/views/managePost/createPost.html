@@ -1,0 +1,395 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Thêm bài đăng</title>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<script
+	src="https://cdn.ckeditor.com/ckeditor5/28.0.0/decoupled-document/ckeditor.js"></script>
+<!--===============================================================================================-->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="./fragments/library :: link" />
+<!--===============================================================================================-->
+<script th:src="@{/static/js/toastr.js}"></script>
+<!--===============================================================================================-->
+<style>
+#editor {
+	border: 1px solid black;
+}
+
+* {
+	font-family: 'Times New Roman', Times, serif;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contain {
+	width: 80%;
+	margin: auto;
+}
+
+.contain table {
+	width: 100%;
+	line-height: 50px;;
+}
+
+.contain h1 {
+	text-align: center;
+}
+
+#toolbar-container {
+	width: 100%;;
+	margin: auto;
+}
+
+#editor {
+	height: 200px;
+}
+
+#trackingDiv {
+	border: 1px solid black;
+	border-radius: 5px;
+	display: none;
+}
+
+#imgChoose {
+	width: 400px;
+	padding-top: 20px;
+}
+
+.box-img {
+	width: 50%;
+	margin: auto;
+}
+
+#content-menu-sub-category {
+	display: none;
+}
+
+.title {
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+}
+
+@media screen and (max-width:1100px) {
+	#toolbar-container {
+		width: 900px;
+		margin: auto;
+	}
+}
+
+@media screen and (max-width:1000px) {
+	#toolbar-container {
+		width: 800px;
+		margin: auto;
+	}
+}
+
+@media screen and (max-width:800px) {
+	#toolbar-container {
+		width: 500px;
+		margin: auto;
+	}
+}
+
+@media screen and (max-width:500px) {
+	#toolbar-container {
+		width: 50%;
+		margin: auto;
+	}
+}
+</style>
+<script>
+		function clickChoose(){
+			var e = document.getElementById("type-post-sub");
+			var strUser = e.value;
+			document.getElementById("postSelf").value=strUser;
+		}
+		$(document).ready(function(){
+        	var messageSuccess = '[[${messageSuccess}]]';
+        	var messageError = '[[${meesageError}]]';
+        	console.log(messageSuccess)
+        	console.log(messageError)
+        	function myMessage() {
+        		if (messageSuccess != null && messageSuccess.length >= 1) {
+        			dialogSuccess(messageSuccess);
+        		}
+        		if (messageError != null && messageError.length >= 1) {
+        			dialogError(messageError);
+        		}
+        	}
+        	setTimeout(myMessage, 100);
+        	
+            $("#flip").click(function(){
+                $("#trackingDiv").slideToggle("slow");
+            });
+            $("#img-picker").mouseout(function(){
+                var valueLink = $(this).val();
+                $("#imgChoose").attr("src",valueLink);
+            });
+
+            $("#btnXoaRong").click(function(){
+                $('#formData').trigger("reset");
+            });
+            $("#listCategory").on('change', function (e) {
+            	
+            	var getCategoryChoose = $( "#listCategory option:selected" ).val();
+            	var getTypeCategory = $("#hiddenTypeCategory"+getCategoryChoose).val();
+            	console.log("getTypeCategory")
+            	console.log(getTypeCategory)
+            	if(getTypeCategory == 'NOMENCLATURE'){
+            		  $("#type-post").val("POST");
+            	}else{
+            		 $("#type-post").val("MENU");
+            	}
+            	$('#content-menu-sub-category').hide();
+                 $("#content-sub-category").html('');   
+               
+                 $("#postSelf").val('');
+            });
+            
+            $("#type-post").on('change', function (e) {
+                var optionSelected = $("option:selected", this);
+                var valueSelected = this.value;
+                
+                var getCategoryChoose = $( "#listCategory option:selected" ).val();
+            	var getCategoryTextChoose = $( "#listCategory option:selected" ).text();
+                var getTypeCategory = $("#hiddenTypeCategory"+getCategoryChoose).val();
+                if(getTypeCategory == 'NOMENCLATURE'){
+                	dialogError("Danh mục thuật ngữ không thể tạo menu");		
+                	$("#type-post").val("POST");
+                }else{
+                	if(valueSelected == "MENU"){
+                        $('#content-menu-sub-category').hide();
+                        $("#content-sub-category").html('');
+                        $("#postSelf").val('');
+                    }else{
+                    	
+                        $('#content-menu-sub-category').show();
+                        var token = '[[${session.token}]]';
+                        $.ajax({
+            				type : 'GET',
+            				contentType: "application/json; charset=utf-8",
+            				url : 'http://localhost:8762/api/v1/post/listByIdCategoryAndTypePost?idCategory='+getCategoryChoose,
+            				/*contentType: false, //Cần thiết
+            				processData: false, //Cần thiết*/
+            				success : function(e) {
+            					var fileJson = e.data;
+                                if(fileJson.length <= 0){
+                                	dialogError("Mặt hàng "+getCategoryTextChoose+" chưa có danh mục nào, yêu cầu tạo lại danh mục MENU trước");		
+                                	$("#type-post").val("MENU");
+                                }else{
+                                	$("#postSelf").val(fileJson[0].idPost);
+                                	var resultHtml = "";
+                                    resultHtml += '<select class="form-control" id="type-post-sub" onchange="clickChoose()">';
+                                    for(var i =0 ;i<fileJson.length;i++){
+                                        resultHtml += '<option value="'+fileJson[i].idPost+'">'+fileJson[i].name+'</option>';
+                                    }
+                                    resultHtml += '</select>';
+                                	 $("#content-sub-category").html(resultHtml);
+                                }
+            				},
+            				error : function(e) {
+            					var listErrorMessages = e.responseJSON.listErrorMessages;
+            					dialogError(listErrorMessages[0].message);					
+            				}
+            			});
+                    }
+                }
+            });
+            
+            $("#formData").submit(function() {
+    			var name = $("#name").val();
+    			var content = $("#content-form").val();
+    			var imgPicker = $("#img-picker").val();
+    			var statusResult = true;
+    			if (name == null || name.length <= 0) {
+    				$("#errorName").text("vui lòng nhập name");
+    				statusResult = false;
+    			} else {
+    				$("#errorName").text("");
+    			}
+    			
+    			if (content == null || content.length <= 0) {
+    				$("#errorContent").text("vui lòng nhập nội dung");
+    				statusResult = false;
+    			} else if(content.length <= 200 && $("#type-post").val() != 'MENU'){
+    				$("#errorContent").text("Nội dung phải hơn 200 ký tự");
+    				statusResult = false;
+    			} else {
+    				$("#errorContent").text("");
+    			}
+    			
+    			if (imgPicker == null || imgPicker.length <= 0) {
+    				$("#errorImage").text("vui lòng nhập hình");
+    				statusResult = false;
+    			} else {
+    				$("#errorImage").text("");
+    			}
+    			if(statusResult == true){
+    				return true;
+    			}else{
+    				return false;
+    			}
+    		});
+        });
+    </script>
+</head>
+<body>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="./fragments/headerAdmin :: #header-wrapper"></div>
+		<div
+			th:replace="./fragments/navigationAdmin :: ChooseNavigation(choose='managePost')"></div>
+	</div>
+	<div class="contain">
+		<a th:href="@{/post/list}" class="btn btn-primary">Quay lại</a>
+		<h1>Thêm Bài Viết</h1>
+		<form id="formData" accept-charset="utf-8" th:object="${post}"
+			th:action="@{savePost}" action="#" method="post" name="addDisplay">
+			<table>
+				<tr class="title">
+					<td>
+						<p width="40%">
+							Tiêu đề: <span class="error" id="errorName">*</span>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="text" class="form-control"
+						placeholder="Nhập tiêu đề" th:field="*{name}" id="name" /></td>
+				</tr>
+				<tr class="title">
+					<td width="100%">
+						<p>
+							Nhập nội dung: <span class="error" id="errorContent">*</span>
+						</p>
+					</td>
+
+				</tr>
+				<tr>
+					<td>
+						<!-- The toolbar will be rendered in this container. -->
+						<div id="toolbar-container"></div> <!-- This container will become the editable. -->
+						<div id="editor" class="form-control">
+							<p>This is the initial editor content.</p>
+						</div> <a id="flip" value="xem trước"
+						class="btn btn-success form-control">Xem trước</a>
+						<div id="trackingDiv"></div> <input id="content-form"
+						type="hidden" th:field="*{content}" />
+					</td>
+				</tr>
+				<tr>
+
+				</tr>
+				<tr class="title">
+					<td>Danh sách danh mục:</td>
+				</tr>
+				<tr>
+					<td><select id="listCategory" th:field="*{idCategory}"
+						class="form-control">
+							<option th:each="category : ${listCategory}"
+								th:value="${category.idCategory}" th:utext="${category.name}" />
+					</select>
+						<div th:each=" category : ${listCategory}">
+							<input type="hidden"
+								th:id="${'hiddenTypeCategory'+category.idCategory}"
+								th:value="${category.typeCategory}" />
+						</div></td>
+				</tr>
+				<tr class="title">
+					<td>
+						<p>Loại danh mục:</p>
+					</td>
+				</tr>
+				<tr>
+					<td><select th:field="*{typePost}" class="form-control"
+						id="type-post">
+							<option value="MENU">Menu</option>
+							<option value="POST">Post</option>
+					</select></td>
+				</tr>
+
+				<tr>
+					<td id="content-menu-sub-category" class="title">
+						<div id="">Danh sách menu</div>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="hidden" id="postSelf"
+						th:field="*{idPostSelf}" /></td>
+				</tr>
+				<tr>
+					<td id="content-sub-category"></td>
+				</tr>
+				<tr class="title">
+					<td>
+						<p>
+							Chọn hình: <span class="error" id="errorImage">*</span>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="text" th:field="*{image}" id="img-picker"
+						class="form-control" placeholder="Chọn hình" /></td>
+				</tr>
+				<tr>
+					<td>
+						<div class="box-img">
+							<img id="imgChoose" />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: right;"><input id="btnXacNhan"
+						type="submit" value="Xác nhận" class="btn btn-success" /> <a
+						id="btnXoaRong" class="btn btn-primary">Xóa rỗng</a> <a
+						th:href="@{/post/list}" class="btn btn-danger">Hủy</a></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div th:replace="./fragments/footer :: #footer_wrapper"></div>
+	<script>
+         var myEditor;
+        DecoupledEditor
+            .create( document.querySelector( '#editor' ) )
+            .then( editor => {
+                const toolbarContainer = document.querySelector( '#toolbar-container' );
+                toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+                myEditor = editor;
+            } )
+            .catch( error => {
+                console.error( error );
+        } );
+            
+            // ClassicEditor.replace( 'editor1' );
+
+        timer = setInterval(updateDiv,1000);
+        function updateDiv(){
+            document.getElementById("trackingDiv").innerHTML=myEditor.getData();
+            document.getElementById("content-form").value=myEditor.getData();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Học online miễn phí - Freetus</title>
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: script" />
+<!--===============================================================================================-->
+<link th:replace="fragments/library :: link" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/error.css}">
+</head>
+<body id="home"
+	class=" page page-template-default right-sidebar singular fade-imgs-in-appear time_in_twelve_format one-side-wide both-sidebars wpb-js-composer js-comp-ver-4.9 vc_responsive no-js"
+	itemtype="http://schema.org/WebPage">
+	<div class="boxed-wrap clearfix">
+		<div th:replace="fragments/header :: #header-wrapper"></div>
+		<div th:replace="fragments/navigation :: #navigation"></div>
+	</div>
+	<div class="boxed-content-wrapper clearfix">
+		<div class="inner" id="adheader" style="margin-bottom: 20px"></div>
+		<div class="inner"></div>
+		<div class="inner" style="margin-top: 20px;">
+			<div class="abc2side">
+				<div id="abcleft" style="overflow: hidden">
+					<div id="abcleft-unit"></div>
+				</div>
+				<div id="abcright" style="overflow: hidden">
+					<div id="abcright-unit"></div>
+				</div>
+			</div>
+			<div class="main_container">
+				<div class="main-col" id="main_container">
+					<div id="shortlist_wrapper">
+						<div id="shortlist">
+							<select class="form-control"
+								style="background: #912f2f; color: #fff">
+							</select>
+						</div>
+					</div>
+					<div th:if="${listCategory == null}">
+						<p style="text-align: center; font-size: 40px;">Chưa có danh
+							mục nào</p>
+					</div>
+					<div th:each="category : ${listCategory}">
+						<div class="news-box  base-box nb-style3"
+							th:if="${category.listPost == null || category.listPost.size() >= 1}">
+							<header class="nb-header">
+								<h2 class="nb-title">
+									<span th:text="${category.name}">Quản trị Web</span>
+								</h2>
+							</header>
+							<!--nb header-->
+							<div class="nb-content"
+								th:if="${category.listPost != null && category.listPost.size() >=  1}">
+								<div class="recent-news"
+									th:each="post, iter : ${category.listPost}"
+									th:if="${iter.index == 0}">
+									<article
+										class="post-198 post type-post status-publish format-standard has-post-thumbnail category-sports category-world tag-design tag-momizat tag-templates tag-themes tag-tutorial tag-wordpress"
+										title="no title">
+										<div class="news-image">
+											<a th:href="${'/demo/post/detail?id='+post.idPost}"
+												title="bandwidth la gi 3919 html"><img
+												th:src="${post.image}" alt="No content" width="284"
+												height="180"></a>
+										</div>
+										<div class="news-summary">
+											<h3>
+												<a th:href="${'/demo/post/detail?id='+post.idPost}"
+													style="text-decoration: none;"
+													title="bandwidth la gi 3919 html" th:text="${post.name}">Bandwidth
+													là gì? Các thuật ngữ liên quan đến bandwidth</a>
+											</h3>
+											<p
+												th:text="${#strings.substring(T(org.jsoup.Jsoup).parse(post.content).text(),0,100)+'...'}">
+												Trong bài này mình sẽ giải thích khái niệm Bandwidth là gì?
+												Qua đó ...</p>
+										</div>
+									</article>
+								</div>
+								<div class="older-articles">
+									<ul th:each="post, iter : ${category.listPost}"
+										th:if="${iter.index >= 1}">
+										<li><a th:href="${'/demo/post/detail?id='+post.idPost}"
+											title="lenh users trong linux 3685 html"><img
+												th:src="${post.image}" alt="No content"></a>
+											<div class="details has-feature-image">
+												<h4>
+													<a style="text-decoration: none;"
+														th:href="${'/demo/post/detail?id='+post.idPost}"
+														title="lenh users trong linux 3685 html"
+														th:text="${post.name}"> Cách dùng lệnh Users trong
+														Linux để xem user đang online</a>
+												</h4>
+											</div></li>
+									</ul>
+								</div>
+							</div>
+							<footer class="nb-footer"
+								th:if="${category.listPost != null && category.listPost.size() >= 1}">
+								<a style="text-decoration: none;"
+									th:href="@{'/category/detail?id='+${category.idCategory}}"
+									class="show-more-ajax" title="Quản trị Web">Xem thêm <i
+									class="fa fa-long-arrow-right" aria-hidden="true"></i>
+								</a>
+							</footer>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+			</div>
+			<div class="sidebar main-sidebar" id="right_sidebar"
+				style="position: relative">
+				<div class="widget momizat-reviews" id="blog_latest">
+					<div class="widget-head">
+						<h3 class="widget-title">
+							<span>Thuật ngữ</span>
+						</h3>
+					</div>
+					<div class="mom-posts-widget">
+						<!-- >div class="mpw-post"  style="text-align: right">
+							<p title="khóa học">Không có nội dung</p>
+						</div-->
+						<div th:each="category : ${listCategory}"
+							th:if="${listCategory != null && listCategory.size() >= 1 && #strings.toString(category.typeCategory) == 'NOMENCLATURE'}">
+							<div
+								th:if="${category.listPost != null && category.listPost.size() >= 1 }"
+								th:each="post, iter : ${category.listPost}">
+								<div class="mpw-post">
+									<div class="post-img main-sidebar-element">
+										<a th:href="@{'/post/detailGlossary?id='+${post.idPost}}" th:title="${post.name}">
+											<img th:src="${post.image}"
+											th:alt="${post.name}"
+											width="90" height="60">
+										</a>
+									</div>
+									<div class="details has-feature-image">
+										<h4>
+											<a th:href="@{'/post/detailGlossary?id='+${post.idPost}}" th:title="${post.name}"
+											th:text="${post.name}"
+											></a>
+										</h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div th:replace="fragments/footer :: #footer_wrapper"></div>
+</body>
+</html>
