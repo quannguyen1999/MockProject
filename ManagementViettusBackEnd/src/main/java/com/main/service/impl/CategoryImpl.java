@@ -27,6 +27,7 @@ import com.main.service.CategoryService;
 import com.querydsl.core.types.Predicate;
 
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 
 @AllArgsConstructor
 @Service
@@ -85,6 +86,7 @@ public class CategoryImpl implements CategoryService{
 		return categoryMapper.listCategoryToListCategoryGetDto(categoryRepository.findByName(name));
 	}
 
+	@Cacheable(value = "listCategory",key="#pageNo")
 	@Override
 	public PageImpl<CategoryPostDto> listPagination(Integer pageNo, Integer pageSize) {
 		Pageable paging = PageRequest.of(pageNo, pageSize);
