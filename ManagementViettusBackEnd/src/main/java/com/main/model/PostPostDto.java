@@ -1,5 +1,6 @@
 package com.main.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor//: tự tạo constructor có tham số
 @NoArgsConstructor//: tự tạo constructor không có tham số
 @ToString//: tự tạo to String
-public class PostPostDto {
+public class PostPostDto implements Serializable {
 	@JsonProperty(access = Access.READ_ONLY)
 	private int idPost;
 

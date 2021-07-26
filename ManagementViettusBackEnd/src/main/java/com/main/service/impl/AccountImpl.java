@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -107,6 +108,7 @@ public class AccountImpl implements AccountService{
 		return accountMapper.accountToAccountGetDto(account);
 	}
 
+	@Cacheable(value = "listAccount",key="#pageNo")
 	@Override
 	public PageImpl<AccountGetDto> listPagination(Integer pageNo, Integer pageSize) {
 		Pageable paging = PageRequest.of(pageNo, pageSize);

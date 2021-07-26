@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +50,7 @@ public class CategoryImpl implements CategoryService{
 	}
 
 	@Override
+//	@Caching(evict = {@CacheEvict(value = "")})
 	public Boolean saveCategory(CategoryPostDto categoryDto) {
 		try {
 			if(categoryDto.getTypeCategory() == null) {
@@ -116,8 +119,10 @@ public class CategoryImpl implements CategoryService{
 		return categoryMapper.listCategoryToListCategoryGetDto(categoryRepository.findByIdCategoryNotIn(listCollection));
 	}
 
+	@Cacheable(value = "listHeader",key = "1")
 	@Override
 	public List<CategoryGetDto> listCategoryDtosForHeader() {
+		System.out.println("not inside");
 		List<Category> listCategories = categoryRepository.findByStatusTrue();
 		List<CategoryGetDto> listCategoryGetDtos = categoryMapper.listCategoryToListCategoryGetDtoForHeader(listCategories);
 		listCategoryGetDtos.forEach(t->{
@@ -137,6 +142,7 @@ public class CategoryImpl implements CategoryService{
 		return categoryMapper.listCategoryToListCategoryGetDto(listCategories);
 	}
 
+//	@Cacheable(value = "listHomePage")
 	@Override
 	public List<CategoryGetDto> listCategoryDtosForHomePage() {
 		List<Category> listCategories = categoryRepository.findByStatusTrue();

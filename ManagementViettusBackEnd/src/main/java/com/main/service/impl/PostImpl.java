@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -69,6 +71,7 @@ public class PostImpl implements PostService{
 		return true;
 	}
 
+	@CacheEvict(value = "listHeader",key = "1")
 	@Override
 	public PostPostDto updatePost(PostPostDto postPostDto, int idPost) {
 		Post post = postRepository.findById(idPost).get();
